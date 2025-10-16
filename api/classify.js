@@ -3,7 +3,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Gemini API設定
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIzaSyAyYD8RkEekz6xaSJLgAVHqPwmSGfqZEro');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS設定
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
