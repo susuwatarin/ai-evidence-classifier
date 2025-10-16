@@ -70,3 +70,4 @@ MIT License
 ## サポート
 
 問題が発生した場合は、GitHubのIssuesで報告してください。
+test
