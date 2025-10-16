@@ -18,6 +18,10 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // デバッグログ
+  console.log('API Key exists:', !!process.env.GEMINI_API_KEY);
+  console.log('Request body:', req.body);
+
   try {
     const { imageData, fileName, mimeType } = req.body;
 
@@ -26,7 +30,7 @@ module.exports = async function handler(req, res) {
     }
 
     // Geminiモデルを取得
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // 分類用のプロンプト
     const prompt = `この画像・PDFファイルを分析し、会計資料として最も適切なカテゴリを判定してください。
@@ -103,10 +107,12 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Classification error:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({
       success: false,
       error: '分類処理中にエラーが発生しました',
-      details: error.message
+      details: error.message,
+      stack: error.stack
     });
   }
 }
