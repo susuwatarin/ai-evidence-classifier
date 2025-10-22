@@ -1,17 +1,3 @@
 {
-  "version": 2,
-  "rewrites": [
-    {
-      "source": "/api/classify",
-      "destination": "/api/classify.js"
-    },
-    {
-      "source": "/api/box-auth",
-      "destination": "/api/box-auth.js"
-    },
-    {
-      "source": "/api/auth-callback",
-      "destination": "/api/auth-callback.js"
-    }
-  ]
+  "version": 2
 }
