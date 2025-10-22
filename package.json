@@ -9,7 +9,8 @@
     "start": "node api/classify.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.2.1"
+    "@google/generative-ai": "^0.2.1",
+    "axios": "^1.6.0"
   },
   "engines": {
     "node": "20.x"
