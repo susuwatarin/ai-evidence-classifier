@@ -4,7 +4,7 @@ const axios = require('axios');
 // Box API設定（プロトタイプ用）
 const BOX_CLIENT_ID = 'hi1wa1jasaijl3z1d1n9id6hhv1t7ket';
 const BOX_CLIENT_SECRET = 'p2z1jhKgtC15FJ2hnFT9aJL68YmumVCG';
-const BOX_REDIRECT_URI = 'https://ai-evidence-classifier-61015202-73622n8rh-susuwatarins-projects.vercel.app/api/test-callback';
+const BOX_REDIRECT_URI = 'https://ai-evidence-classifier-61015202.vercel.app/api/box-callback';
 
 module.exports = async function handler(req, res) {
   // CORS設定
