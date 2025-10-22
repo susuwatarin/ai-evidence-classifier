@@ -1,8 +1,8 @@
 const axios = require('axios');
 
-// Box API設定
-const BOX_CLIENT_ID = process.env.BOX_CLIENT_ID;
-const BOX_CLIENT_SECRET = process.env.BOX_CLIENT_SECRET;
+// Box API設定（プロトタイプ用 - 実際の値に置き換えてください）
+const BOX_CLIENT_ID = process.env.BOX_CLIENT_ID || 'hi1wa1jasaijl3z1d1n9id6hhv1t7ket';
+const BOX_CLIENT_SECRET = process.env.BOX_CLIENT_SECRET || 'p2z1jhKgtC15FJ2hnFT9aJL68YmumVCG';
 const BOX_REDIRECT_URI = process.env.BOX_REDIRECT_URI || 'http://localhost:3000/auth/callback';
 
 module.exports = async function handler(req, res) {
