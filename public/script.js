@@ -9,6 +9,10 @@ let processingStats = {
     error: 0
 };
 
+// Box連携変数
+let boxAccessToken = null;
+let currentFolderId = null;
+
 
 // DOM要素の取得
 const uploadArea = document.getElementById('uploadArea');
@@ -412,5 +416,160 @@ function resetApp() {
     hideProgress();
     resultsArea.style.display = 'none';
     classifyBtn.disabled = false;
+}
+
+// ==================== Box認証機能 ====================
+
+// Box認証開始
+async function authenticateBox() {
+    try {
+        console.log('Box認証を開始します...');
+        
+        // 認証URLを取得
+        const response = await fetch('/api/box-auth', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`認証URL取得に失敗: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('認証URL取得結果:', data);
+        
+        if (data.success && data.authUrl) {
+            // 新しいウィンドウでBox認証を開く
+            const authWindow = window.open(
+                data.authUrl,
+                'boxAuth',
+                'width=600,height=700,scrollbars=yes,resizable=yes'
+            );
+            
+            if (!authWindow) {
+                alert('ポップアップがブロックされました。ポップアップを許可してください。');
+                return;
+            }
+            
+            // 認証完了を監視
+            const handleMessage = (event) => {
+                console.log('メッセージ受信:', event.data);
+                if (event.data && event.data.type === 'BOX_AUTH_SUCCESS') {
+                    console.log('認証コード受信:', event.data.code);
+                    completeBoxAuth(event.data.code);
+                    window.removeEventListener('message', handleMessage);
+                }
+            };
+            window.addEventListener('message', handleMessage);
+            
+            // ウィンドウが閉じられた場合のフォールバック
+            const checkAuth = setInterval(() => {
+                if (authWindow.closed) {
+                    clearInterval(checkAuth);
+                    window.removeEventListener('message', handleMessage);
+                    console.log('認証ウィンドウが閉じられました');
+                    
+                    // 手動でコードを入力
+                    const code = prompt('認証コードを入力してください（Box認証ページからコピーしてください）:');
+                    if (code) {
+                        completeBoxAuth(code);
+                    }
+                }
+            }, 1000);
+            
+        } else {
+            throw new Error('認証URLが取得できませんでした');
+        }
+        
+    } catch (error) {
+        console.error('Box認証エラー:', error);
+        alert('Box認証に失敗しました: ' + error.message);
+    }
+}
+
+// Box認証完了処理
+async function completeBoxAuth(code) {
+    try {
+        console.log('認証コードでトークンを取得中:', code);
+        
+        const response = await fetch('/api/box-auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: code })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`トークン取得に失敗: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('トークン取得結果:', data);
+        
+        if (data.success && data.accessToken) {
+            boxAccessToken = data.accessToken;
+            updateAuthStatus(true);
+            alert('Box認証が完了しました！');
+        } else {
+            throw new Error(data.error || 'アクセストークンが取得できませんでした');
+        }
+        
+    } catch (error) {
+        console.error('認証完了エラー:', error);
+        alert('認証完了に失敗しました: ' + error.message);
+    }
+}
+
+// 認証状態の更新
+function updateAuthStatus(isAuthenticated) {
+    const authStatus = document.getElementById('authStatus');
+    const folderSection = document.getElementById('folderSection');
+    
+    if (isAuthenticated) {
+        authStatus.innerHTML = `
+            <p style="color: green;">✅ Box認証済み</p>
+            <button onclick="logoutBox()">ログアウト</button>
+        `;
+        folderSection.style.display = 'block';
+    } else {
+        authStatus.innerHTML = `
+            <p>Boxにログインしてください</p>
+            <button class="auth-btn" onclick="authenticateBox()">🔐 Boxにログイン</button>
+        `;
+        folderSection.style.display = 'none';
+    }
+}
+
+// Boxログアウト
+function logoutBox() {
+    boxAccessToken = null;
+    currentFolderId = null;
+    updateAuthStatus(false);
+    alert('Boxからログアウトしました');
+}
+
+// 親フォルダ設定（プレースホルダー）
+async function setParentFolder() {
+    const folderInput = document.getElementById('parentFolderId');
+    const folderId = folderInput.value.trim();
+    
+    if (!folderId) {
+        alert('フォルダIDまたはURLを入力してください');
+        return;
+    }
+    
+    // TODO: フォルダIDの検証と設定
+    console.log('親フォルダ設定:', folderId);
+    alert('フォルダ設定機能は次のステップで実装します');
+}
+
+// 必須フォルダのチェック（プレースホルダー）
+async function checkRequiredFolders() {
+    // TODO: 必須フォルダの存在確認
+    console.log('必須フォルダをチェック中...');
+    alert('必須フォルダチェック機能は次のステップで実装します');
 }
 

@@ -510,6 +510,130 @@ footer {
     margin: 1rem 0;
 }
 
+/* ==================== Box連携スタイル ==================== */
+
+/* Box連携セクション */
+.box-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.box-section h3 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.box-section p {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* 認証セクション */
+.auth-section {
+    margin-bottom: 20px;
+}
+
+.auth-section h4 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.auth-status {
+    padding: 15px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+.auth-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.auth-btn:hover {
+    background: #0056b3;
+}
+
+/* フォルダセクション */
+.folder-section {
+    margin-top: 20px;
+}
+
+.folder-section h4 {
+    color: #495057;
+    margin-bottom: 15px;
+}
+
+.folder-input {
+    margin-bottom: 15px;
+}
+
+.folder-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #495057;
+}
+
+.folder-input input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.folder-input button {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.folder-input button:hover {
+    background: #218838;
+}
+
+/* フォルダ情報 */
+.folder-info {
+    background: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.folder-info h5 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.folder-info button {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.folder-info button:hover {
+    background: #138496;
+}
+
 /* アニメーション */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }

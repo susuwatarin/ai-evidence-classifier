@@ -72,6 +72,39 @@
                 </button>
             </div>
 
+            <!-- Box連携セクション -->
+            <div class="box-section" id="boxSection">
+                <h3>📦 Box連携</h3>
+                <p>Boxアカウントと連携して、ファイルを直接Boxから取得・分類できます</p>
+                
+                <!-- Box認証 -->
+                <div class="auth-section">
+                    <h4>Box認証</h4>
+                    <div id="authStatus" class="auth-status">
+                        <p>Boxにログインしてください</p>
+                        <button class="auth-btn" id="authBtn" onclick="authenticateBox()">
+                            🔐 Boxにログイン
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 認証後のフォルダ設定 -->
+                <div class="folder-section" id="folderSection" style="display: none;">
+                    <h4>フォルダ設定</h4>
+                    <div class="folder-input">
+                        <label for="parentFolderId">親フォルダID/URL:</label>
+                        <input type="text" id="parentFolderId" placeholder="https://box.com/folder/123456789 または 123456789">
+                        <button onclick="setParentFolder()">設定適用</button>
+                    </div>
+                    
+                    <div class="folder-info" id="folderInfo" style="display: none;">
+                        <h5>現在の設定:</h5>
+                        <p id="currentFolderName"></p>
+                        <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
 
         <footer>
