@@ -420,24 +420,45 @@ function resetApp() {
 // Box認証機能
 async function authenticateBox() {
     try {
+        console.log('Box認証を開始します...');
         const response = await fetch('/api/box-auth', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
         
         const data = await response.json();
+        console.log('認証URL取得結果:', data);
         
         if (data.success) {
+            console.log('認証URL:', data.authUrl);
             // 新しいウィンドウでBox認証を開く
             const authWindow = window.open(data.authUrl, 'boxAuth', 'width=600,height=600');
             
-            // 認証完了を監視
+            if (!authWindow) {
+                showNotification('ポップアップがブロックされました。ポップアップを許可してください。', 'error');
+                return;
+            }
+            
+            // 認証完了を監視（メッセージイベント）
+            const handleMessage = (event) => {
+                console.log('メッセージ受信:', event.data);
+                if (event.data.type === 'BOX_AUTH_SUCCESS') {
+                    console.log('認証コード受信:', event.data.code);
+                    completeBoxAuth(event.data.code);
+                    window.removeEventListener('message', handleMessage);
+                }
+            };
+            window.addEventListener('message', handleMessage);
+            
+            // ウィンドウが閉じられた場合のフォールバック
             const checkAuth = setInterval(async () => {
                 try {
                     if (authWindow.closed) {
                         clearInterval(checkAuth);
-                        // 認証コードを取得（実際の実装では、コールバックURLから取得）
-                        const code = prompt('認証コードを入力してください:');
+                        window.removeEventListener('message', handleMessage);
+                        console.log('認証ウィンドウが閉じられました');
+                        // 認証コードを手動入力
+                        const code = prompt('認証コードを入力してください（Box認証ページのURLから「code=」の後の文字列をコピーしてください）:');
                         if (code) {
                             await completeBoxAuth(code);
                         }
@@ -448,11 +469,11 @@ async function authenticateBox() {
             }, 1000);
             
         } else {
-            showNotification('Box認証URLの取得に失敗しました', 'error');
+            showNotification('Box認証URLの取得に失敗しました: ' + (data.error || '不明なエラー'), 'error');
         }
     } catch (error) {
         console.error('Box auth error:', error);
-        showNotification('Box認証エラーが発生しました', 'error');
+        showNotification('Box認証エラーが発生しました: ' + error.message, 'error');
     }
 }
 
