@@ -1,6 +1,13 @@
 // グローバル変数
 let selectedFiles = [];
 let classificationResults = [];
+let isProcessing = false;
+let processingStats = {
+    total: 0,
+    completed: 0,
+    success: 0,
+    error: 0
+};
 
 // DOM要素の取得
 const uploadArea = document.getElementById('uploadArea');
@@ -141,30 +148,94 @@ async function startClassification() {
         return;
     }
     
+    if (isProcessing) {
+        alert('処理中です。完了までお待ちください。');
+        return;
+    }
+    
+    isProcessing = true;
     classifyBtn.disabled = true;
     showProgress();
     classificationResults = [];
     
+    // 統計情報をリセット
+    processingStats = {
+        total: selectedFiles.length,
+        completed: 0,
+        success: 0,
+        error: 0
+    };
+    
     try {
-        for (let i = 0; i < selectedFiles.length; i++) {
-            const file = selectedFiles[i];
-            updateProgress(i + 1, selectedFiles.length, `処理中: ${file.name}`);
-            
-            const result = await classifyFile(file);
-            classificationResults.push(result);
-            
-            // 少し待機（API制限対策）
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        // 並列処理の設定
+        const maxConcurrent = Math.min(3, selectedFiles.length); // 最大3つまで並列処理
+        const batches = [];
+        
+        // ファイルをバッチに分割
+        for (let i = 0; i < selectedFiles.length; i += maxConcurrent) {
+            batches.push(selectedFiles.slice(i, i + maxConcurrent));
         }
         
-        updateProgress(selectedFiles.length, selectedFiles.length, '完了！');
+        // バッチごとに処理
+        for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+            const batch = batches[batchIndex];
+            
+            // バッチ内のファイルを並列処理
+            const batchPromises = batch.map(file => processFile(file));
+            await Promise.all(batchPromises);
+            
+            // バッチ間の待機（API制限対策）
+            if (batchIndex < batches.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+        }
+        
+        updateProgress(processingStats.completed, processingStats.total, '完了！');
         showResults();
         
     } catch (error) {
         console.error('Classification error:', error);
         alert('分類処理中にエラーが発生しました: ' + error.message);
         hideProgress();
+    } finally {
+        isProcessing = false;
         classifyBtn.disabled = false;
+    }
+}
+
+// 個別ファイル処理
+async function processFile(file) {
+    try {
+        updateProgress(processingStats.completed, processingStats.total, 
+            `処理中: ${file.name} (${processingStats.completed + 1}/${processingStats.total})`);
+        
+        const result = await classifyFile(file);
+        classificationResults.push(result);
+        
+        processingStats.completed++;
+        processingStats.success++;
+        
+        updateProgress(processingStats.completed, processingStats.total, 
+            `完了: ${file.name} (${processingStats.completed}/${processingStats.total})`);
+        
+    } catch (error) {
+        console.error(`Error processing ${file.name}:`, error);
+        
+        // エラーでも結果に追加
+        classificationResults.push({
+            fileName: file.name,
+            category: 'その他',
+            confidence: 0,
+            reason: '処理エラー: ' + error.message,
+            timestamp: new Date().toISOString(),
+            status: 'error'
+        });
+        
+        processingStats.completed++;
+        processingStats.error++;
+        
+        updateProgress(processingStats.completed, processingStats.total, 
+            `エラー: ${file.name} (${processingStats.completed}/${processingStats.total})`);
     }
 }
 
@@ -222,6 +293,7 @@ async function classifyFile(file) {
 function showProgress() {
     progressArea.style.display = 'block';
     progressArea.classList.add('fade-in');
+    document.getElementById('progressStats').style.display = 'flex';
 }
 
 // 進捗更新
@@ -229,20 +301,40 @@ function updateProgress(current, total, text) {
     const percentage = (current / total) * 100;
     progressFill.style.width = percentage + '%';
     progressText.textContent = text;
+    
+    // 統計情報を更新
+    document.getElementById('completedCount').textContent = current;
+    document.getElementById('successCount').textContent = processingStats.success;
+    document.getElementById('errorCount').textContent = processingStats.error;
 }
 
 // 進捗非表示
 function hideProgress() {
     progressArea.style.display = 'none';
+    document.getElementById('progressStats').style.display = 'none';
 }
 
 // 結果表示
 function showResults() {
     resultsList.innerHTML = '';
     
+    // 処理結果のサマリーを表示
+    const summaryItem = document.createElement('div');
+    summaryItem.className = 'result-summary';
+    summaryItem.innerHTML = `
+        <h4>処理結果サマリー</h4>
+        <div class="summary-stats">
+            <span class="summary-item">総ファイル数: ${processingStats.total}</span>
+            <span class="summary-item success">成功: ${processingStats.success}</span>
+            <span class="summary-item error">エラー: ${processingStats.error}</span>
+            <span class="summary-item">成功率: ${((processingStats.success / processingStats.total) * 100).toFixed(1)}%</span>
+        </div>
+    `;
+    resultsList.appendChild(summaryItem);
+    
     classificationResults.forEach((result, index) => {
         const resultItem = document.createElement('div');
-        resultItem.className = 'result-item fade-in';
+        resultItem.className = `result-item fade-in ${result.status === 'error' ? 'error' : ''}`;
         resultItem.innerHTML = `
             <div class="result-icon">${getCategoryIcon(result.category)}</div>
             <div class="result-details">
@@ -250,6 +342,7 @@ function showResults() {
                 <div class="result-category">${result.category}</div>
                 <div class="result-confidence">信頼度: ${(result.confidence * 100).toFixed(1)}%</div>
                 <div class="result-reason">${result.reason}</div>
+                ${result.status === 'error' ? '<div class="error-badge">エラー</div>' : ''}
             </div>
         `;
         resultsList.appendChild(resultItem);

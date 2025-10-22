@@ -347,6 +347,100 @@ footer {
     }
 }
 
+/* 進捗統計表示 */
+.progress-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    justify-content: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2196F3;
+}
+
+.stat-value.success {
+    color: #4CAF50;
+}
+
+.stat-value.error {
+    color: #f44336;
+}
+
+/* 結果サマリー */
+.result-summary {
+    background: #e3f2fd;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #2196F3;
+}
+
+.result-summary h4 {
+    margin: 0 0 1rem 0;
+    color: #1976D2;
+}
+
+.summary-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.summary-item {
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.summary-item.success {
+    color: #4CAF50;
+    background: #e8f5e8;
+}
+
+.summary-item.error {
+    color: #f44336;
+    background: #ffebee;
+}
+
+/* エラー表示 */
+.result-item.error {
+    border-left: 4px solid #f44336;
+    background: #ffebee;
+}
+
+.error-badge {
+    display: inline-block;
+    background: #f44336;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
 /* アニメーション */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
