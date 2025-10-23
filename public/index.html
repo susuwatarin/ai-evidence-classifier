@@ -92,8 +92,8 @@
                 <div class="folder-section" id="folderSection" style="display: none;">
                     <h4>フォルダ設定</h4>
                     <div class="folder-input">
-                        <label for="parentFolderId">親フォルダID/URL:</label>
-                        <input type="text" id="parentFolderId" placeholder="https://box.com/folder/123456789 または 123456789">
+                        <label for="parentFolderInput">親フォルダID/URL:</label>
+                        <input type="text" id="parentFolderInput" placeholder="https://box.com/folder/123456789 または 123456789">
                         <button onclick="setParentFolder()">設定適用</button>
                     </div>
                     
@@ -110,7 +110,7 @@
                             <div class="folder-basic-info">
                                 <h6>基本情報</h6>
                                 <p><strong>フォルダ名:</strong> <span id="parentFolderName"></span></p>
-                                <p><strong>フォルダID:</strong> <span id="parentFolderId"></span></p>
+                                <p><strong>フォルダID:</strong> <span id="parentFolderIdDisplay"></span></p>
                                 <p><strong>作成日時:</strong> <span id="parentFolderCreated"></span></p>
                                 <p><strong>更新日時:</strong> <span id="parentFolderModified"></span></p>
                             </div>

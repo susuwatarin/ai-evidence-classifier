@@ -936,7 +936,7 @@ async function displayParentFolderDetails(folderId) {
 
         // 基本情報を設定
         document.getElementById('parentFolderName').textContent = folderData.folder.name;
-        document.getElementById('parentFolderId').textContent = folderData.folder.id;
+        document.getElementById('parentFolderIdDisplay').textContent = folderData.folder.id;
         document.getElementById('parentFolderCreated').textContent = formatDate(folderData.folder.created_at);
         document.getElementById('parentFolderModified').textContent = formatDate(folderData.folder.modified_at);
 
@@ -1003,7 +1003,7 @@ function formatDate(dateString) {
 
 // 親フォルダ設定（既存の関数を更新）
 async function setParentFolder() {
-    const folderInput = document.getElementById('parentFolderId');
+    const folderInput = document.getElementById('parentFolderInput');
     const folderId = folderInput.value.trim();
     
     if (!folderId) {
