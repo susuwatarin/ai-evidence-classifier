@@ -454,10 +454,21 @@ async function authenticateBox() {
             }
             
             // 認証完了を監視
+            let authCompleted = false; // 重複使用を防ぐフラグ
+            
             const handleMessage = (event) => {
                 console.log('メッセージ受信:', event.data);
-                if (event.data && event.data.type === 'BOX_AUTH_SUCCESS') {
+                console.log('メッセージ送信元:', event.origin);
+                
+                // セキュリティチェック（必要に応じて）
+                // if (event.origin !== 'https://ai-evidence-classifier-61015202.vercel.app') {
+                //     console.log('信頼できない送信元:', event.origin);
+                //     return;
+                // }
+                
+                if (event.data && event.data.type === 'BOX_AUTH_SUCCESS' && !authCompleted) {
                     console.log('認証コード受信:', event.data.code);
+                    authCompleted = true;
                     completeBoxAuth(event.data.code);
                     window.removeEventListener('message', handleMessage);
                 }
@@ -466,15 +477,19 @@ async function authenticateBox() {
             
             // ウィンドウが閉じられた場合のフォールバック
             const checkAuth = setInterval(() => {
-                if (authWindow.closed) {
+                if (authWindow.closed && !authCompleted) {
                     clearInterval(checkAuth);
                     window.removeEventListener('message', handleMessage);
                     console.log('認証ウィンドウが閉じられました');
                     
-                    // 手動でコードを入力
+                    // 手動でコードを入力（フォールバック）
                     const code = prompt('認証コードを入力してください（Box認証ページからコピーしてください）:');
-                    if (code) {
-                        completeBoxAuth(code);
+                    if (code && code.trim()) {
+                        console.log('手動で認証コードを入力:', code.trim());
+                        authCompleted = true;
+                        completeBoxAuth(code.trim());
+                    } else {
+                        console.log('認証がキャンセルされました');
                     }
                 }
             }, 1000);
@@ -494,12 +509,35 @@ async function completeBoxAuth(code) {
     try {
         console.log('認証コードでトークンを取得中:', code);
         
+        // 認証コードの検証
+        if (!code || typeof code !== 'string' || code.trim().length === 0) {
+            throw new Error('認証コードが無効です');
+        }
+        
+        // 認証コードの重複使用を防ぐ
+        if (boxAccessToken) {
+            console.log('既に認証済みです');
+            return;
+        }
+        
+        console.log('認証コードの詳細:', {
+            code: code,
+            length: code.length,
+            type: typeof code
+        });
+        
         const response = await fetch('/api/box-auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ code: code })
+        });
+        
+        console.log('APIレスポンス:', {
+            status: response.status,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
         });
         
         if (!response.ok) {
