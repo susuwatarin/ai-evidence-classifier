@@ -171,47 +171,42 @@ module.exports = async function handler(req, res) {
 // 交通費関連の書類は「交通費」フォルダに分類してください。
 `;
 
-                                // Box APIファイルアップロード（2段階アップロード）
-                                // 1. アップロードセッションを作成
-                                const sessionResponse = await axios.post(`https://upload.box.com/api/2.0/files/upload_sessions`, {
-                                    folder_id: settingFolder.id,
-                                    file_size: Buffer.byteLength(promptContent, 'utf8'),
-                                    file_name: '追加プロンプト.txt'
-                                }, {
-                                    headers: {
-                                        'Authorization': `Bearer ${accessToken}`,
-                                        'Content-Type': 'application/json'
-                                    }
+                                // Chrome拡張機能の実装を参考にしたBox APIファイルアップロード
+                                const FormData = require('form-data');
+                                const form = new FormData();
+                                
+                                // attributesを先に追加（Chrome拡張機能と同じ方法）
+                                const attributes = {
+                                    name: '追加プロンプト.txt',
+                                    parent: { id: settingFolder.id }
+                                };
+                                form.append('attributes', JSON.stringify(attributes));
+                                
+                                // ファイルデータをBuffer形式で追加（Node.js環境用）
+                                const fileBuffer = Buffer.from(promptContent, 'utf8');
+                                form.append('file', fileBuffer, {
+                                    filename: '追加プロンプト.txt',
+                                    contentType: 'text/plain; charset=utf-8'
                                 });
 
-                                const sessionId = sessionResponse.data.id;
-                                const uploadUrl = sessionResponse.data.upload_urls.upload_url;
-
-                                // 2. ファイルをアップロード
-                                const uploadResponse = await axios.put(uploadUrl, promptContent, {
-                                    headers: {
-                                        'Content-Type': 'text/plain'
-                                    }
-                                });
-
-                                // 3. アップロードセッションをコミット
-                                const commitResponse = await axios.post(`https://upload.box.com/api/2.0/files/upload_sessions/${sessionId}/commit`, {
-                                    attributes: {
-                                        name: '追加プロンプト.txt',
-                                        parent: {
-                                            id: settingFolder.id
-                                        }
-                                    }
-                                }, {
+                                const uploadResponse = await axios.post(`https://upload.box.com/api/2.0/files/content`, form, {
                                     headers: {
                                         'Authorization': `Bearer ${accessToken}`,
-                                        'Content-Type': 'application/json'
+                                        ...form.getHeaders()
                                     }
                                 });
 
                                 additionalPromptCreated = true;
+                                console.log('追加プロンプトファイル作成成功');
+                                console.log('アップロードレスポンス:', uploadResponse.data);
                             } catch (promptError) {
                                 console.error('追加プロンプトファイル作成エラー:', promptError.response?.data || promptError.message);
+                                console.error('エラー詳細:', promptError);
+                                console.error('リクエスト詳細:', {
+                                    url: 'https://upload.box.com/api/2.0/files/content',
+                                    folderId: settingFolder.id,
+                                    fileName: '追加プロンプト.txt'
+                                });
                             }
                         } else {
                             additionalPromptCreated = true; // 既に存在する場合
