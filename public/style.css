@@ -493,19 +493,29 @@ main {
     color: #495057;
 }
 
-.additional-prompt-info {
-    background-color: #d4edda;
-    border-color: #c3e6cb;
+.setting-structure-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
 }
 
-.additional-prompt-info h6 {
-    color: #155724;
+.setting-structure-info h6 {
+    color: #0c5460;
 }
 
-.additional-prompt-info p {
-    margin: 5px 0 0 0;
+.setting-structure-details {
+    margin-top: 10px;
+}
+
+.setting-structure-details p {
+    margin: 5px 0;
     font-size: 13px;
-    color: #155724;
+    color: #0c5460;
+    padding-left: 10px;
+}
+
+.setting-structure-details p strong {
+    color: #0c5460;
+    font-weight: 600;
 }
 
 .check-actions {

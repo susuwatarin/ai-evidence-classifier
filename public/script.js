@@ -1110,10 +1110,14 @@ function displayRequiredFoldersResult(data) {
                     </div>
                 ` : ''}
                 
-                ${data.additionalPromptCreated ? `
-                    <div class="additional-prompt-info">
-                        <h6>✅ 追加プロンプトファイル</h6>
-                        <p>【setting】フォルダに「追加プロンプト.txt」を作成しました</p>
+                ${data.settingStructureCreated ? `
+                    <div class="setting-structure-info">
+                        <h6>✅ 【setting】フォルダ構造</h6>
+                        <div class="setting-structure-details">
+                            <p><strong>📁 log</strong> - ログファイル格納フォルダ</p>
+                            <p><strong>📄 追加プロンプト.txt</strong> - 分類ルール設定ファイル</p>
+                            <p><strong>📁 [フォルダ名]_samples</strong> - 各振分先フォルダのサンプル格納フォルダ</p>
+                        </div>
                     </div>
                 ` : ''}
                 

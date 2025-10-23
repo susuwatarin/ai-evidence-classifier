@@ -76,16 +76,90 @@ module.exports = async function handler(req, res) {
                 }
             }
 
-            // 【setting】フォルダ内に追加プロンプトファイルを作成
-            let additionalPromptCreated = false;
+            // 【setting】フォルダ内の構造を作成
+            let settingStructureCreated = false;
             if (missingFolders.includes('【setting】') || existingFolderNames.includes('【setting】')) {
                 const settingFolder = createdFolders.find(f => f.name === '【setting】') || 
                                     existingFolders.find(f => f.name === '【setting】');
                 
                 if (settingFolder) {
                     try {
-                        // 追加プロンプトファイルの内容
-                        const promptContent = `// 追加プロンプト設定ファイル
+                        // 【setting】フォルダ内のアイテムを取得
+                        const settingItemsResponse = await axios.get(`https://api.box.com/2.0/folders/${settingFolder.id}/items?fields=id,name,type`, {
+                            headers: {
+                                'Authorization': `Bearer ${accessToken}`
+                            }
+                        });
+
+                        const settingItems = settingItemsResponse.data.entries;
+                        const existingSettingFolders = settingItems.filter(item => item.type === 'folder');
+                        const existingSettingFiles = settingItems.filter(item => item.type === 'file');
+                        const existingSettingFolderNames = existingSettingFolders.map(f => f.name);
+
+                        // 必要なサブフォルダを作成（logフォルダのみ）
+                        const requiredSubFolders = ['log'];
+                        const createdSubFolders = [];
+
+                        for (const subFolderName of requiredSubFolders) {
+                            if (!existingSettingFolderNames.includes(subFolderName)) {
+                                try {
+                                    const subFolderResponse = await axios.post(`https://api.box.com/2.0/folders`, {
+                                        name: subFolderName,
+                                        parent: {
+                                            id: settingFolder.id
+                                        }
+                                    }, {
+                                        headers: {
+                                            'Authorization': `Bearer ${accessToken}`,
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+
+                                    createdSubFolders.push({
+                                        name: subFolderName,
+                                        id: subFolderResponse.data.id
+                                    });
+                                } catch (subFolderError) {
+                                    console.error(`サブフォルダ作成エラー (${subFolderName}):`, subFolderError.response?.data || subFolderError.message);
+                                }
+                            }
+                        }
+
+                        // 振分先フォルダごとのサンプルフォルダを作成
+                        const sampleFoldersCreated = [];
+                        for (const destFolder of destinationFolders) {
+                            const sampleFolderName = `${destFolder.name}_samples`;
+                            if (!existingSettingFolderNames.includes(sampleFolderName)) {
+                                try {
+                                    const sampleFolderResponse = await axios.post(`https://api.box.com/2.0/folders`, {
+                                        name: sampleFolderName,
+                                        parent: {
+                                            id: settingFolder.id
+                                        }
+                                    }, {
+                                        headers: {
+                                            'Authorization': `Bearer ${accessToken}`,
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+
+                                    sampleFoldersCreated.push({
+                                        name: sampleFolderName,
+                                        id: sampleFolderResponse.data.id,
+                                        parentFolder: destFolder.name
+                                    });
+                                } catch (sampleError) {
+                                    console.error(`サンプルフォルダ作成エラー (${sampleFolderName}):`, sampleError.response?.data || sampleError.message);
+                                }
+                            }
+                        }
+
+                        // 追加プロンプトファイルを作成
+                        let additionalPromptCreated = false;
+                        const existingPromptFile = existingSettingFiles.find(f => f.name === '追加プロンプト.txt');
+                        if (!existingPromptFile) {
+                            try {
+                                const promptContent = `// 追加プロンプト設定ファイル
 //
 // ## 使用方法：
 // 1. 実際に使用する指示は、そのまま記述してください
@@ -97,20 +171,29 @@ module.exports = async function handler(req, res) {
 // 交通費関連の書類は「交通費」フォルダに分類してください。
 `;
 
-                        // ファイルをアップロード
-                        const uploadResponse = await axios.post(`https://api.box.com/2.0/files/content`, 
-                            `name=追加プロンプト.txt&parent_id=${settingFolder.id}`, 
-                            {
-                                headers: {
-                                    'Authorization': `Bearer ${accessToken}`,
-                                    'Content-Type': 'application/x-www-form-urlencoded'
-                                }
-                            }
-                        );
+                                // ファイルをアップロード
+                                const uploadResponse = await axios.post(`https://api.box.com/2.0/files/content`, 
+                                    `name=追加プロンプト.txt&parent_id=${settingFolder.id}`, 
+                                    {
+                                        headers: {
+                                            'Authorization': `Bearer ${accessToken}`,
+                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                        }
+                                    }
+                                );
 
-                        additionalPromptCreated = true;
-                    } catch (promptError) {
-                        console.error('追加プロンプトファイル作成エラー:', promptError.response?.data || promptError.message);
+                                additionalPromptCreated = true;
+                            } catch (promptError) {
+                                console.error('追加プロンプトファイル作成エラー:', promptError.response?.data || promptError.message);
+                            }
+                        } else {
+                            additionalPromptCreated = true; // 既に存在する場合
+                        }
+
+                        settingStructureCreated = true;
+
+                    } catch (structureError) {
+                        console.error('【setting】フォルダ構造作成エラー:', structureError.response?.data || structureError.message);
                     }
                 }
             }
@@ -125,7 +208,7 @@ module.exports = async function handler(req, res) {
                     id: folder.id,
                     name: folder.name
                 })),
-                additionalPromptCreated: additionalPromptCreated,
+                settingStructureCreated: settingStructureCreated,
                 message: missingFolders.length > 0 ? 
                     `必須フォルダを作成しました: ${createdFolders.map(f => f.name).join(', ')}` :
                     '必須フォルダは既に存在します'
