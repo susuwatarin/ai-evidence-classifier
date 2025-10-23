@@ -11,6 +11,8 @@ let processingStats = {
 
 // Box連携変数
 let boxAccessToken = null;
+let boxRefreshToken = null;
+let boxTokenExpiry = null;
 let currentFolderId = null;
 
 
@@ -27,9 +29,42 @@ const resultsArea = document.getElementById('resultsArea');
 const resultsList = document.getElementById('resultsList');
 const downloadBtn = document.getElementById('downloadBtn');
 
+// ページ読み込み時にトークン情報を復元
+function restoreBoxAuth() {
+    const storedToken = localStorage.getItem('boxAccessToken');
+    const storedRefreshToken = localStorage.getItem('boxRefreshToken');
+    const storedExpiry = localStorage.getItem('boxTokenExpiry');
+    
+    if (storedToken && storedRefreshToken && storedExpiry) {
+        boxAccessToken = storedToken;
+        boxRefreshToken = storedRefreshToken;
+        boxTokenExpiry = parseInt(storedExpiry);
+        
+        // トークンが有効かチェック
+        if (Date.now() < boxTokenExpiry) {
+            updateAuthStatus(true);
+        } else {
+            // 期限切れの場合はクリア
+            clearBoxAuth();
+        }
+    }
+}
+
+// 認証情報をクリア
+function clearBoxAuth() {
+    boxAccessToken = null;
+    boxRefreshToken = null;
+    boxTokenExpiry = null;
+    localStorage.removeItem('boxAccessToken');
+    localStorage.removeItem('boxRefreshToken');
+    localStorage.removeItem('boxTokenExpiry');
+    updateAuthStatus(false);
+}
+
 // イベントリスナーの設定
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
+    restoreBoxAuth(); // ページ読み込み時に認証状態を復元
 });
 
 function setupEventListeners() {
@@ -508,6 +543,14 @@ async function completeBoxAuth(code) {
         
         if (data.success && data.accessToken) {
             boxAccessToken = data.accessToken;
+            boxRefreshToken = data.refreshToken;
+            boxTokenExpiry = Date.now() + (data.expiresIn * 1000);
+            
+            // トークン情報をローカルストレージに保存
+            localStorage.setItem('boxAccessToken', data.accessToken);
+            localStorage.setItem('boxRefreshToken', data.refreshToken);
+            localStorage.setItem('boxTokenExpiry', boxTokenExpiry.toString());
+            
             updateAuthStatus(true);
             showMessage('Box認証が完了しました！', 'success');
         } else {
@@ -560,6 +603,73 @@ function showMessage(message, type = 'info') {
     }, 3000);
 }
 
+// トークン更新機能
+async function refreshBoxToken() {
+    try {
+        if (!boxRefreshToken) {
+            throw new Error('リフレッシュトークンがありません');
+        }
+
+        const response = await fetch('/api/box-auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                refreshToken: boxRefreshToken,
+                action: 'refresh'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('トークン更新に失敗しました');
+        }
+
+        const data = await response.json();
+        
+        if (data.success && data.accessToken) {
+            boxAccessToken = data.accessToken;
+            boxRefreshToken = data.refreshToken || boxRefreshToken;
+            boxTokenExpiry = Date.now() + (data.expiresIn * 1000);
+            
+            // ローカルストレージも更新
+            localStorage.setItem('boxAccessToken', data.accessToken);
+            localStorage.setItem('boxRefreshToken', boxRefreshToken);
+            localStorage.setItem('boxTokenExpiry', boxTokenExpiry.toString());
+            
+            return true;
+        } else {
+            throw new Error(data.error || 'トークン更新に失敗しました');
+        }
+    } catch (error) {
+        console.error('トークン更新エラー:', error);
+        return false;
+    }
+}
+
+// 有効なアクセストークンを取得（必要に応じて更新）
+async function getValidBoxToken() {
+    if (!boxAccessToken) {
+        return null;
+    }
+
+    // トークンの有効期限をチェック（5分前から更新）
+    if (boxTokenExpiry && Date.now() >= (boxTokenExpiry - 5 * 60 * 1000)) {
+        const refreshed = await refreshBoxToken();
+        if (!refreshed) {
+            // 更新に失敗した場合は再認証が必要
+            boxAccessToken = null;
+            boxRefreshToken = null;
+            boxTokenExpiry = null;
+            updateAuthStatus(false);
+            showMessage('認証の有効期限が切れました。再認証してください。', 'warning');
+            return null;
+        }
+    }
+
+    return boxAccessToken;
+}
+
 // 認証状態の更新
 function updateAuthStatus(isAuthenticated) {
     const authStatus = document.getElementById('authStatus');
@@ -582,10 +692,9 @@ function updateAuthStatus(isAuthenticated) {
 
 // Boxログアウト
 function logoutBox() {
-    boxAccessToken = null;
+    clearBoxAuth();
     currentFolderId = null;
-    updateAuthStatus(false);
-    alert('Boxからログアウトしました');
+    showMessage('Boxからログアウトしました', 'info');
 }
 
 // 親フォルダ設定（プレースホルダー）

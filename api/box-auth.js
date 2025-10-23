@@ -33,9 +33,50 @@ module.exports = async function handler(req, res) {
       });
 
     } else if (req.method === 'POST') {
-      // 認証コードをアクセストークンに交換
-      const { code } = req.body;
+      const { code, refreshToken, action } = req.body;
 
+      // リフレッシュトークンによる更新処理
+      if (action === 'refresh' && refreshToken) {
+        const tokenData = new URLSearchParams();
+        tokenData.append('grant_type', 'refresh_token');
+        tokenData.append('refresh_token', refreshToken);
+        tokenData.append('client_id', BOX_CLIENT_ID);
+        tokenData.append('client_secret', BOX_CLIENT_SECRET);
+
+        console.log('Box認証リフレッシュリクエスト:', {
+          url: 'https://api.box.com/oauth2/token',
+          data: tokenData.toString(),
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+
+        const tokenResponse = await axios.post('https://api.box.com/oauth2/token', tokenData.toString(), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+
+        console.log('Box認証リフレッシュレスポンス:', tokenResponse.data);
+
+        if (tokenResponse.data.access_token) {
+          res.status(200).json({
+            success: true,
+            accessToken: tokenResponse.data.access_token,
+            refreshToken: tokenResponse.data.refresh_token || refreshToken,
+            expiresIn: tokenResponse.data.expires_in,
+            message: 'Box認証が更新されました'
+          });
+        } else {
+          res.status(400).json({
+            success: false,
+            error: 'アクセストークンの更新に失敗しました'
+          });
+        }
+        return;
+      }
+
+      // 認証コードをアクセストークンに交換
       if (!code) {
         return res.status(400).json({
           success: false,
