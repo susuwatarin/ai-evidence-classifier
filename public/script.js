@@ -151,7 +151,7 @@ function updateFileList() {
                 <div class="file-name">${file.name}</div>
                 <div class="file-size">${formatFileSize(file.size)}</div>
             </div>
-            <button class="remove-btn" onclick="removeFile(${index})">×</button>
+            <button class="btn btn-error btn-small" onclick="removeFile(${index})">×</button>
         `;
         fileList.appendChild(fileItem);
     });
@@ -691,7 +691,7 @@ function updateAuthStatus(isAuthenticated) {
     if (isAuthenticated) {
         authStatus.innerHTML = `
             <p style="color: green;">✅ Box認証済み</p>
-            <button onclick="logoutBox()">ログアウト</button>
+            <button class="btn btn-secondary" onclick="logoutBox()">ログアウト</button>
         `;
         folderSection.style.display = 'block';
         
@@ -703,7 +703,7 @@ function updateAuthStatus(isAuthenticated) {
     } else {
         authStatus.innerHTML = `
             <p>Boxにログインしてください</p>
-            <button class="auth-btn" onclick="authenticateBox()">🔐 Boxにログイン</button>
+            <button class="btn btn-primary" onclick="authenticateBox()">🔐 Boxにログイン</button>
         `;
         folderSection.style.display = 'none';
         
@@ -807,7 +807,7 @@ async function displayBoxFolders(folderId = '0', parentPath = '') {
                     📁 ${folder.name}
                 </div>
                 <div class="folder-actions">
-                    <button onclick="setAsParentFolder('${folder.id}', '${folder.name}')">親フォルダに設定</button>
+                    <button class="btn btn-success" onclick="setAsParentFolder('${folder.id}', '${folder.name}')">親フォルダに設定</button>
                 </div>
             `;
             folderList.appendChild(folderItem);
@@ -915,7 +915,7 @@ async function setAsParentFolder(folderId, folderName) {
         folderInfo.innerHTML = `
             <h5>親フォルダ設定完了</h5>
             <p>📁 ${folderName} (ID: ${folderId})</p>
-            <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
+            <button class="btn btn-secondary" onclick="checkRequiredFolders()">必須フォルダをチェック</button>
         `;
         folderInfo.style.display = 'block'; // エリアを表示
     }
@@ -1122,8 +1122,8 @@ function displayRequiredFoldersResult(data) {
                 ` : ''}
                 
                 <div class="check-actions">
-                    <button onclick="checkRequiredFolders()">再チェック</button>
-                    <button onclick="startClassification()" class="primary-btn">振り分け開始</button>
+                    <button class="btn btn-secondary" onclick="checkRequiredFolders()">再チェック</button>
+                    <button class="btn btn-primary" onclick="startClassification()">振り分け開始</button>
                 </div>
             </div>
         `;
