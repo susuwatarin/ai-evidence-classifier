@@ -295,24 +295,24 @@ body {
     box-shadow: var(--md-shadow-1);
 }
 
-/* カードサイズ - 統一されたサイズシステム */
+/* カードサイズ（文字サイズに最適化） */
 .card-small {
-    padding: var(--md-space-md);
+    padding: var(--md-space-sm);
     border-radius: var(--md-radius-medium);
 }
 
 .card-medium {
-    padding: var(--md-space-lg);
+    padding: var(--md-space-md);
     border-radius: var(--md-radius-large);
 }
 
 .card-large {
-    padding: var(--md-space-xl);
+    padding: var(--md-space-lg);
     border-radius: var(--md-radius-large);
 }
 
 .card-extra-large {
-    padding: var(--md-space-xxl);
+    padding: var(--md-space-xl);
     border-radius: var(--md-radius-xlarge);
 }
 
@@ -503,25 +503,25 @@ body {
       - リンク風: .btn-text
    ======================================== */
 
-/* ボタンベーススタイル - 全ボタン共通 */
+/* ボタンベーススタイル - 全ボタン共通（文字サイズに最適化） */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--md-space-sm);
-    padding: var(--md-space-md) var(--md-space-lg);
+    gap: var(--md-space-xs);
+    padding: var(--md-space-sm) var(--md-space-md);
     border: none;
     border-radius: var(--md-radius-small);
     font-family: var(--md-font-family);
-    font-size: var(--md-font-size-md);
+    font-size: var(--md-font-size-sm);
     font-weight: var(--md-font-weight-medium);
     line-height: var(--md-line-height-normal);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    min-height: 48px;
+    letter-spacing: 0.3px;
+    min-height: 36px;
     box-shadow: var(--md-shadow-1);
     position: relative;
     overflow: hidden;
@@ -647,17 +647,17 @@ body {
     transform: translateY(-1px);
 }
 
-/* ボタンサイズ */
+/* ボタンサイズ（文字サイズに最適化） */
 .btn-small {
-    padding: var(--md-space-sm) var(--md-space-md);
-    font-size: var(--md-font-size-sm);
-    min-height: 36px;
+    padding: var(--md-space-xs) var(--md-space-sm);
+    font-size: var(--md-font-size-xs);
+    min-height: 28px;
 }
 
 .btn-large {
-    padding: var(--md-space-lg) var(--md-space-xl);
-    font-size: var(--md-font-size-lg);
-    min-height: 56px;
+    padding: var(--md-space-md) var(--md-space-lg);
+    font-size: var(--md-font-size-md);
+    min-height: 44px;
 }
 
 /* ボタン状態 */
@@ -920,17 +920,19 @@ body {
 
 .folder-input input {
     flex: 1;
-    padding: 12px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: var(--md-space-sm) var(--md-space-md);
+    border: 1px solid var(--md-secondary-light);
+    border-radius: var(--md-radius-small);
+    font-size: var(--md-font-size-sm);
+    font-family: var(--md-font-family);
     transition: border-color 0.2s ease;
+    min-height: 36px;
 }
 
 .folder-input input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
 }
 
 .folder-info {
@@ -1332,6 +1334,8 @@ body {
     .btn {
         width: 100%;
         justify-content: center;
+        min-height: 40px;
+        padding: var(--md-space-sm) var(--md-space-md);
     }
 }
 
