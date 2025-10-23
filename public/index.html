@@ -7,74 +7,83 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🤖 AI証拠分類ツール</h1>
-            <p>会計資料をAIで自動分類します</p>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-content">
+                <h1>🤖 AI証拠分類ツール</h1>
+                <p>会計資料をAIで自動分類します</p>
+            </div>
         </header>
 
-        <main>
+        <main class="main-content">
             <!-- ファイルアップロードエリア -->
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-content">
-                    <div class="upload-icon">📁</div>
-                    <h3>ファイルをドラッグ&ドロップ</h3>
-                    <p>または</p>
-                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                        ファイルを選択
-                    </button>
-                    <input type="file" id="fileInput" accept="image/*,.pdf" multiple style="display: none;">
-                    <p class="file-info">対応形式: PNG, JPG, JPEG, GIF, PDF</p>
+            <div class="card">
+                <h2>📁 ファイルアップロード</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">ファイルをドラッグ&ドロップ</div>
+                        <div class="upload-hint">または</div>
+                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            ファイルを選択
+                        </button>
+                        <input type="file" id="fileInput" accept="image/*,.pdf" multiple style="display: none;">
+                        <div class="upload-hint">対応形式: PNG, JPG, JPEG, GIF, PDF</div>
+                    </div>
                 </div>
             </div>
 
             <!-- 選択されたファイル表示 -->
-            <div class="selected-files" id="selectedFiles" style="display: none;">
-                <h3>選択されたファイル</h3>
+            <div class="card" id="selectedFiles" style="display: none;">
+                <h2>📋 選択されたファイル</h2>
                 <div class="file-list" id="fileList"></div>
-                <button class="classify-btn" id="classifyBtn" onclick="startClassification()">
+                <button class="btn btn-success" id="classifyBtn" onclick="startClassification()">
                     🚀 分類開始
                 </button>
             </div>
 
             <!-- 進捗表示 -->
-            <div class="progress-area" id="progressArea" style="display: none;">
-                <h3>分類中...</h3>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <p id="progressText">準備中...</p>
-                <div class="progress-stats" id="progressStats" style="display: none;">
-                    <div class="stat-item">
-                        <span class="stat-label">完了:</span>
-                        <span class="stat-value" id="completedCount">0</span>
+            <div class="card" id="progressArea" style="display: none;">
+                <h2>⏳ 分類中...</h2>
+                <div class="progress-area">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">成功:</span>
-                        <span class="stat-value success" id="successCount">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">エラー:</span>
-                        <span class="stat-value error" id="errorCount">0</span>
+                    <div class="progress-text" id="progressText">準備中...</div>
+                    <div class="progress-stats" id="progressStats" style="display: none;">
+                        <div class="stat-item">
+                            <div class="stat-label">完了</div>
+                            <div class="stat-value" id="completedCount">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">成功</div>
+                            <div class="stat-value success" id="successCount">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">エラー</div>
+                            <div class="stat-value error" id="errorCount">0</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- 結果表示 -->
-            <div class="results-area" id="resultsArea" style="display: none;">
-                <h3>分類結果</h3>
+            <div class="card" id="resultsArea" style="display: none;">
+                <h2>📊 分類結果</h2>
                 <div class="results-list" id="resultsList"></div>
-                <button class="download-btn" id="downloadBtn" onclick="downloadResults()">
-                    📊 CSVダウンロード
-                </button>
-                <button class="reset-btn" onclick="resetApp()">
-                    🔄 リセット
-                </button>
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button class="btn btn-primary" id="downloadBtn" onclick="downloadResults()">
+                        📊 CSVダウンロード
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetApp()">
+                        🔄 リセット
+                    </button>
+                </div>
             </div>
 
             <!-- Box連携セクション -->
-            <div class="box-section" id="boxSection">
-                <h3>📦 Box連携</h3>
+            <div class="card" id="boxSection">
+                <h2>📦 Box連携</h2>
                 <p>Boxアカウントと連携して、ファイルを直接Boxから取得・分類できます</p>
                 
                 <!-- Box認証 -->
@@ -82,7 +91,7 @@
                     <h4>Box認証</h4>
                     <div id="authStatus" class="auth-status">
                         <p>Boxにログインしてください</p>
-                        <button class="auth-btn" id="authBtn" onclick="authenticateBox()">
+                        <button class="btn btn-primary" id="authBtn" onclick="authenticateBox()">
                             🔐 Boxにログイン
                         </button>
                     </div>
@@ -94,7 +103,7 @@
                     <div class="folder-input">
                         <label for="parentFolderInput">親フォルダID/URL:</label>
                         <input type="text" id="parentFolderInput" placeholder="https://box.com/folder/123456789 または 123456789">
-                        <button onclick="setParentFolder()">設定適用</button>
+                        <button class="btn btn-primary" onclick="setParentFolder()">設定適用</button>
                     </div>
                     
                     <div class="folder-info" id="folderInfo" style="display: none;">
