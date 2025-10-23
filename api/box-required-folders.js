@@ -171,16 +171,43 @@ module.exports = async function handler(req, res) {
 // 交通費関連の書類は「交通費」フォルダに分類してください。
 `;
 
-                                // ファイルをアップロード
-                                const uploadResponse = await axios.post(`https://api.box.com/2.0/files/content`, 
-                                    `name=追加プロンプト.txt&parent_id=${settingFolder.id}`, 
-                                    {
-                                        headers: {
-                                            'Authorization': `Bearer ${accessToken}`,
-                                            'Content-Type': 'application/x-www-form-urlencoded'
+                                // Box APIファイルアップロード（2段階アップロード）
+                                // 1. アップロードセッションを作成
+                                const sessionResponse = await axios.post(`https://upload.box.com/api/2.0/files/upload_sessions`, {
+                                    folder_id: settingFolder.id,
+                                    file_size: Buffer.byteLength(promptContent, 'utf8'),
+                                    file_name: '追加プロンプト.txt'
+                                }, {
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`,
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+
+                                const sessionId = sessionResponse.data.id;
+                                const uploadUrl = sessionResponse.data.upload_urls.upload_url;
+
+                                // 2. ファイルをアップロード
+                                const uploadResponse = await axios.put(uploadUrl, promptContent, {
+                                    headers: {
+                                        'Content-Type': 'text/plain'
+                                    }
+                                });
+
+                                // 3. アップロードセッションをコミット
+                                const commitResponse = await axios.post(`https://upload.box.com/api/2.0/files/upload_sessions/${sessionId}/commit`, {
+                                    attributes: {
+                                        name: '追加プロンプト.txt',
+                                        parent: {
+                                            id: settingFolder.id
                                         }
                                     }
-                                );
+                                }, {
+                                    headers: {
+                                        'Authorization': `Bearer ${accessToken}`,
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
 
                                 additionalPromptCreated = true;
                             } catch (promptError) {
