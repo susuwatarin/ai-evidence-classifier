@@ -17,7 +17,7 @@
 
         <main class="main-content">
             <!-- ファイルアップロードエリア -->
-            <div class="card card-elevated">
+            <div class="card card-elevated card-large">
                 <h2 class="headline-3">📁 ファイルアップロード</h2>
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-content">
@@ -34,7 +34,7 @@
             </div>
 
             <!-- 選択されたファイル表示 -->
-            <div class="card card-outlined" id="selectedFiles" style="display: none;">
+            <div class="card card-outlined card-medium" id="selectedFiles" style="display: none;">
                 <h2 class="headline-3">📋 選択されたファイル</h2>
                 <div class="file-list" id="fileList"></div>
                 <button class="btn btn-success" id="classifyBtn" onclick="startClassification()">
@@ -43,7 +43,7 @@
             </div>
 
             <!-- 進捗表示 -->
-            <div class="card card-filled" id="progressArea" style="display: none;">
+            <div class="card card-filled card-medium" id="progressArea" style="display: none;">
                 <h2 class="headline-3">⏳ 分類中...</h2>
                 <div class="progress-area">
                     <div class="progress-bar">
@@ -68,7 +68,7 @@
             </div>
 
             <!-- 結果表示 -->
-            <div class="card card-elevated" id="resultsArea" style="display: none;">
+            <div class="card card-elevated card-large" id="resultsArea" style="display: none;">
                 <h2 class="headline-3">📊 分類結果</h2>
                 <div class="results-list" id="resultsList"></div>
                 <div class="margin-top-lg" style="display: flex; gap: var(--md-space-md);">
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Box連携セクション -->
-            <div class="card card-outlined" id="boxSection">
+            <div class="card card-outlined card-extra-large" id="boxSection">
                 <h2 class="headline-3">📦 Box連携</h2>
                 <p class="body-1">Boxアカウントと連携して、ファイルを直接Boxから取得・分類できます</p>
                 
@@ -109,7 +109,7 @@
                     <div class="folder-info" id="folderInfo" style="display: none;">
                         <h5>現在の設定:</h5>
                         <p id="currentFolderName"></p>
-                        <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
+                        <button class="btn btn-secondary" onclick="checkRequiredFolders()">必須フォルダをチェック</button>
                     </div>
                     
                     <!-- 親フォルダ詳細情報表示エリア -->
@@ -149,7 +149,7 @@
                     <!-- フォルダ一覧表示エリア -->
                     <div class="folder-browser" id="folderBrowser">
                         <h5>フォルダ一覧</h5>
-                        <button onclick="displayBoxFolders()">ルートフォルダを表示</button>
+                        <button class="btn btn-secondary" onclick="displayBoxFolders()">ルートフォルダを表示</button>
                         <div id="folderList" class="folder-list"></div>
                     </div>
                 </div>

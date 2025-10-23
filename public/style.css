@@ -162,11 +162,12 @@ body {
     color: var(--md-on-surface-variant);
 }
 
-/* アプリコンテナ */
+/* アプリコンテナ - 1カラムレイアウト対応 */
 .app-container {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: var(--md-space-lg);
+    width: 100%;
 }
 
 /* ヘッダー */
@@ -195,15 +196,49 @@ body {
     opacity: 0.9;
 }
 
-/* メインコンテンツ */
+/* メインコンテンツ - 1カラムレイアウト */
 .main-content {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: var(--md-space-xl);
     margin-bottom: var(--md-space-xxl);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* マテリアルデザイン カードシステム */
+/* ========================================
+   マテリアルデザイン カードシステム統一ルール
+   ========================================
+   
+   カードデザインの統一ルール:
+   
+   1. ベースカード (.card)
+      - 背景: 白 (#ffffff)
+      - 角丸: 12px
+      - パディング: 32px
+      - 影: レベル2
+      - マージン: 下24px
+   
+   2. カードバリエーション
+      - .card-elevated: 重要度の高いコンテンツ（影レベル3）
+      - .card-outlined: セカンダリコンテンツ（枠線のみ）
+      - .card-filled: 背景色付きコンテンツ（グレー背景）
+   
+   3. カードサイズ
+      - .card-small: 16px パディング（小要素）
+      - .card-medium: 24px パディング（標準）
+      - .card-large: 32px パディング（重要）
+      - .card-extra-large: 48px パディング（メイン）
+   
+   4. 使用ルール
+      - メインコンテンツ: .card-elevated
+      - セカンダリコンテンツ: .card-outlined
+      - 背景色付き: .card-filled
+      - サイズは内容の重要度に応じて選択
+   ======================================== */
+
+/* カードベーススタイル - 全カード共通（1カラムレイアウト対応） */
 .card {
     background-color: var(--md-surface);
     border-radius: var(--md-radius-large);
@@ -213,6 +248,8 @@ body {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    margin-bottom: var(--md-space-lg);
+    width: 100%;
 }
 
 .card:hover {
@@ -225,13 +262,15 @@ body {
     box-shadow: var(--md-shadow-2);
 }
 
-/* カードバリエーション */
+/* カードバリエーション - 用途別スタイル */
 .card-elevated {
     box-shadow: var(--md-shadow-3);
+    background-color: var(--md-surface);
 }
 
 .card-elevated:hover {
     box-shadow: var(--md-shadow-4);
+    transform: translateY(-3px);
 }
 
 .card-outlined {
@@ -242,11 +281,13 @@ body {
 
 .card-outlined:hover {
     box-shadow: var(--md-shadow-1);
+    border-color: var(--md-primary);
 }
 
 .card-filled {
     background-color: var(--md-surface-variant);
     box-shadow: none;
+    border: 1px solid var(--md-secondary-light);
 }
 
 .card-filled:hover {
@@ -254,22 +295,27 @@ body {
     box-shadow: var(--md-shadow-1);
 }
 
-/* カードサイズ */
+/* カードサイズ - 統一されたサイズシステム */
 .card-small {
     padding: var(--md-space-md);
+    border-radius: var(--md-radius-medium);
 }
 
 .card-medium {
     padding: var(--md-space-lg);
+    border-radius: var(--md-radius-large);
 }
 
 .card-large {
     padding: var(--md-space-xl);
+    border-radius: var(--md-radius-large);
 }
 
 .card-extra-large {
     padding: var(--md-space-xxl);
+    border-radius: var(--md-radius-xlarge);
 }
+
 
 /* カード内のタイポグラフィ */
 .card h1 {
@@ -421,7 +467,43 @@ body {
     line-height: var(--md-line-height-normal);
 }
 
-/* マテリアルデザイン ボタンシステム */
+/* ========================================
+   マテリアルデザイン ボタンシステム統一ルール
+   ========================================
+   
+   ボタンデザインの統一ルール:
+   
+   1. ベースボタン (.btn)
+      - 高さ: 48px（標準）
+      - パディング: 16px 24px
+      - 角丸: 4px
+      - 影: レベル1
+      - フォント: 16px medium
+      - トランジション: 0.2s cubic-bezier
+   
+   2. ボタンバリエーション
+      - .btn-primary: プライマリアクション（青背景）
+      - .btn-secondary: セカンダリアクション（白背景、青枠）
+      - .btn-success: 成功アクション（緑背景）
+      - .btn-error: エラーアクション（赤背景）
+      - .btn-warning: 警告アクション（オレンジ背景）
+      - .btn-outline: アウトラインボタン（透明背景）
+      - .btn-text: テキストボタン（最小限）
+   
+   3. ボタンサイズ
+      - .btn-small: 36px高さ（小要素）
+      - .btn-large: 56px高さ（重要）
+   
+   4. 使用ルール
+      - メインアクション: .btn-primary
+      - セカンダリアクション: .btn-secondary
+      - 成功/完了: .btn-success
+      - 削除/キャンセル: .btn-error
+      - 警告: .btn-warning
+      - リンク風: .btn-text
+   ======================================== */
+
+/* ボタンベーススタイル - 全ボタン共通 */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -1209,23 +1291,24 @@ body {
     box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
 }
 
-/* レスポンシブデザイン */
+/* レスポンシブデザイン - 1カラムレイアウト対応 */
 @media (max-width: 768px) {
     .main-content {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        gap: var(--md-space-lg);
+        max-width: 100%;
+        padding: 0 var(--md-space-md);
     }
     
     .app-container {
-        padding: 15px;
+        padding: var(--md-space-md);
     }
     
     .card {
-        padding: 20px;
+        padding: var(--md-space-lg);
     }
     
     .app-header h1 {
-        font-size: 2rem;
+        font-size: var(--md-font-size-xxl);
     }
     
     .progress-stats {
@@ -1238,9 +1321,43 @@ body {
     
     .folder-input {
         flex-direction: column;
+        gap: var(--md-space-sm);
     }
     
     .check-actions {
         flex-direction: column;
+        gap: var(--md-space-sm);
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        gap: var(--md-space-md);
+        padding: 0 var(--md-space-sm);
+    }
+    
+    .app-container {
+        padding: var(--md-space-sm);
+    }
+    
+    .card {
+        padding: var(--md-space-md);
+    }
+    
+    .app-header {
+        padding: var(--md-space-lg) 0;
+    }
+    
+    .app-header h1 {
+        font-size: var(--md-font-size-xl);
+    }
+    
+    .upload-area {
+        padding: var(--md-space-lg) var(--md-space-md);
     }
 }
