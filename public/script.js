@@ -1027,10 +1027,101 @@ async function setParentFolder() {
     }
 }
 
-// 必須フォルダのチェック（プレースホルダー）
+// 必須フォルダのチェック
 async function checkRequiredFolders() {
-    // TODO: 必須フォルダの存在確認
-    console.log('必須フォルダをチェック中...');
-    alert('必須フォルダチェック機能は次のステップで実装します');
+    if (!currentFolderId) {
+        showMessage('親フォルダが設定されていません', 'error');
+        return;
+    }
+
+    try {
+        const accessToken = await getValidBoxToken();
+        if (!accessToken) {
+            showMessage('Box認証が必要です', 'error');
+            return;
+        }
+
+        showMessage('必須フォルダをチェック中...', 'info');
+
+        const response = await fetch('/api/box-required-folders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accessToken: accessToken,
+                parentFolderId: currentFolderId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`必須フォルダチェックに失敗: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            displayRequiredFoldersResult(data);
+            showMessage(data.message, 'success');
+        } else {
+            throw new Error(data.error || '必須フォルダチェックに失敗しました');
+        }
+
+    } catch (error) {
+        console.error('必須フォルダチェックエラー:', error);
+        showMessage('必須フォルダチェックエラー: ' + error.message, 'error');
+    }
+}
+
+// 必須フォルダチェック結果を表示
+function displayRequiredFoldersResult(data) {
+    const folderInfo = document.getElementById('folderInfo');
+    if (folderInfo) {
+        folderInfo.innerHTML = `
+            <h5>📁 必須フォルダチェック結果</h5>
+            <div class="required-folders-result">
+                <div class="folders-status">
+                    <h6>必須フォルダ状況</h6>
+                    <ul>
+                        ${data.requiredFolders.map(folder => {
+                            const exists = data.existingFolders.includes(folder);
+                            const created = data.createdFolders.some(f => f.name === folder);
+                            const status = created ? '✅ 作成済み' : (exists ? '✅ 存在' : '❌ 不足');
+                            return `<li>${folder}: ${status}</li>`;
+                        }).join('')}
+                    </ul>
+                </div>
+                
+                ${data.destinationFolders.length > 0 ? `
+                    <div class="destination-folders">
+                        <h6>振分先フォルダ (${data.destinationFolders.length}個)</h6>
+                        <div class="folder-list-small">
+                            ${data.destinationFolders.map(folder => 
+                                `<span class="folder-tag">📁 ${folder.name}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${data.additionalPromptCreated ? `
+                    <div class="additional-prompt-info">
+                        <h6>✅ 追加プロンプトファイル</h6>
+                        <p>【setting】フォルダに「追加プロンプト.txt」を作成しました</p>
+                    </div>
+                ` : ''}
+                
+                <div class="check-actions">
+                    <button onclick="checkRequiredFolders()">再チェック</button>
+                    <button onclick="startClassification()" class="primary-btn">振り分け開始</button>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// 振り分け開始（プレースホルダー）
+async function startClassification() {
+    showMessage('振り分け機能は次のステップで実装します', 'info');
+    console.log('振り分け開始 - 実装予定');
 }
 
