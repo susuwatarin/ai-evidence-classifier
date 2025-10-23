@@ -10,15 +10,15 @@
     <div class="app-container">
         <header class="app-header">
             <div class="header-content">
-                <h1>🤖 AI証拠分類ツール</h1>
-                <p>会計資料をAIで自動分類します</p>
+                <h1 class="headline-1">🤖 AI証拠分類ツール</h1>
+                <p class="body-1">会計資料をAIで自動分類します</p>
             </div>
         </header>
 
         <main class="main-content">
             <!-- ファイルアップロードエリア -->
-            <div class="card">
-                <h2>📁 ファイルアップロード</h2>
+            <div class="card card-elevated">
+                <h2 class="headline-3">📁 ファイルアップロード</h2>
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-content">
                         <div class="upload-icon">📁</div>
@@ -34,8 +34,8 @@
             </div>
 
             <!-- 選択されたファイル表示 -->
-            <div class="card" id="selectedFiles" style="display: none;">
-                <h2>📋 選択されたファイル</h2>
+            <div class="card card-outlined" id="selectedFiles" style="display: none;">
+                <h2 class="headline-3">📋 選択されたファイル</h2>
                 <div class="file-list" id="fileList"></div>
                 <button class="btn btn-success" id="classifyBtn" onclick="startClassification()">
                     🚀 分類開始
@@ -43,8 +43,8 @@
             </div>
 
             <!-- 進捗表示 -->
-            <div class="card" id="progressArea" style="display: none;">
-                <h2>⏳ 分類中...</h2>
+            <div class="card card-filled" id="progressArea" style="display: none;">
+                <h2 class="headline-3">⏳ 分類中...</h2>
                 <div class="progress-area">
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill"></div>
@@ -68,10 +68,10 @@
             </div>
 
             <!-- 結果表示 -->
-            <div class="card" id="resultsArea" style="display: none;">
-                <h2>📊 分類結果</h2>
+            <div class="card card-elevated" id="resultsArea" style="display: none;">
+                <h2 class="headline-3">📊 分類結果</h2>
                 <div class="results-list" id="resultsList"></div>
-                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <div class="margin-top-lg" style="display: flex; gap: var(--md-space-md);">
                     <button class="btn btn-primary" id="downloadBtn" onclick="downloadResults()">
                         📊 CSVダウンロード
                     </button>
@@ -82,15 +82,15 @@
             </div>
 
             <!-- Box連携セクション -->
-            <div class="card" id="boxSection">
-                <h2>📦 Box連携</h2>
-                <p>Boxアカウントと連携して、ファイルを直接Boxから取得・分類できます</p>
+            <div class="card card-outlined" id="boxSection">
+                <h2 class="headline-3">📦 Box連携</h2>
+                <p class="body-1">Boxアカウントと連携して、ファイルを直接Boxから取得・分類できます</p>
                 
                 <!-- Box認証 -->
                 <div class="auth-section">
-                    <h4>Box認証</h4>
+                    <h4 class="headline-5">Box認証</h4>
                     <div id="authStatus" class="auth-status">
-                        <p>Boxにログインしてください</p>
+                        <p class="body-1">Boxにログインしてください</p>
                         <button class="btn btn-primary" id="authBtn" onclick="authenticateBox()">
                             🔐 Boxにログイン
                         </button>
@@ -99,9 +99,9 @@
 
                 <!-- 認証後のフォルダ設定 -->
                 <div class="folder-section" id="folderSection" style="display: none;">
-                    <h4>フォルダ設定</h4>
+                    <h4 class="headline-5">フォルダ設定</h4>
                     <div class="folder-input">
-                        <label for="parentFolderInput">親フォルダID/URL:</label>
+                        <label for="parentFolderInput" class="body-1">親フォルダID/URL:</label>
                         <input type="text" id="parentFolderInput" placeholder="https://box.com/folder/123456789 または 123456789">
                         <button class="btn btn-primary" onclick="setParentFolder()">設定適用</button>
                     </div>
