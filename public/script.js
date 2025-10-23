@@ -1123,16 +1123,146 @@ function displayRequiredFoldersResult(data) {
                 
                 <div class="check-actions">
                     <button class="btn btn-secondary" onclick="checkRequiredFolders()">再チェック</button>
-                    <button class="btn btn-primary" onclick="startClassification()">振り分け開始</button>
+                    <button class="btn btn-primary" onclick="startClassification()">🚀 振り分け開始</button>
                 </div>
             </div>
         `;
     }
 }
 
-// 振り分け開始（プレースホルダー）
+// 振り分け開始
 async function startClassification() {
-    showMessage('振り分け機能は次のステップで実装します', 'info');
-    console.log('振り分け開始 - 実装予定');
+    if (!currentFolderId) {
+        showMessage('親フォルダが設定されていません', 'error');
+        return;
+    }
+
+    try {
+        const accessToken = await getValidBoxToken();
+        if (!accessToken) {
+            showMessage('Box認証が必要です', 'error');
+            return;
+        }
+
+        // 進捗表示を開始
+        showProgressArea();
+        updateProgress(0, '振分処理を開始しています...');
+
+        showMessage('振分処理を開始します...', 'info');
+
+        const response = await fetch('/api/box-sorting', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                accessToken: accessToken,
+                parentFolderId: currentFolderId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`振分処理に失敗: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            updateProgress(100, '振分処理が完了しました');
+            showMessage(data.message, 'success');
+            displaySortingResults(data);
+        } else {
+            throw new Error(data.error || '振分処理に失敗しました');
+        }
+
+    } catch (error) {
+        console.error('振分処理エラー:', error);
+        showMessage('振分処理エラー: ' + error.message, 'error');
+        updateProgress(0, 'エラーが発生しました');
+    }
+}
+
+// 進捗表示エリアを表示
+function showProgressArea() {
+    const progressArea = document.getElementById('progressArea');
+    if (progressArea) {
+        progressArea.style.display = 'block';
+    }
+}
+
+// 進捗を更新
+function updateProgress(percentage, text) {
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    
+    if (progressFill) {
+        progressFill.style.width = percentage + '%';
+    }
+    
+    if (progressText) {
+        progressText.textContent = text;
+    }
+}
+
+// 振分結果を表示
+function displaySortingResults(data) {
+    const resultsArea = document.getElementById('resultsArea');
+    if (!resultsArea) return;
+
+    resultsArea.style.display = 'block';
+    
+    const resultsList = document.getElementById('resultsList');
+    if (!resultsList) return;
+
+    resultsList.innerHTML = '';
+
+    // サマリー情報を表示
+    const summary = document.createElement('div');
+    summary.className = 'sorting-summary';
+    summary.innerHTML = `
+        <div class="summary-stats">
+            <div class="stat-item">
+                <div class="stat-label">処理ファイル数</div>
+                <div class="stat-value">${data.processedFiles}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">成功</div>
+                <div class="stat-value success">${data.successCount}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">エラー</div>
+                <div class="stat-value error">${data.errorCount}</div>
+            </div>
+        </div>
+    `;
+    resultsList.appendChild(summary);
+
+    // 詳細結果を表示
+    if (data.results && data.results.length > 0) {
+        const details = document.createElement('div');
+        details.className = 'sorting-details';
+        details.innerHTML = '<h4>処理詳細</h4>';
+        
+        data.results.forEach(result => {
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${result.status}`;
+                   resultItem.innerHTML = `
+                       <div class="result-info">
+                           <div class="result-name">${result.fileName}</div>
+                           <div class="result-details">
+                               ${result.originalFolder} → ${result.targetFolder}
+                               ${result.classification ? ` (${result.classification})` : ''}
+                           </div>
+                           ${result.reasoning ? `<div class="result-reasoning">💭 ${result.reasoning}</div>` : ''}
+                       </div>
+                       <div class="result-status">
+                           <span class="status-badge ${result.status}">${result.status === 'success' ? '成功' : 'エラー'}</span>
+                       </div>
+                   `;
+            details.appendChild(resultItem);
+        });
+        
+        resultsList.appendChild(details);
+    }
 }
 

@@ -1260,6 +1260,106 @@ body {
     margin-top: 20px;
 }
 
+/* 振分結果表示 */
+.sorting-summary {
+    margin-bottom: var(--md-space-lg);
+    padding: var(--md-space-lg);
+    background-color: var(--md-surface-variant);
+    border-radius: var(--md-radius-large);
+    border: 1px solid var(--md-secondary-light);
+}
+
+.summary-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--md-space-md);
+}
+
+.sorting-details {
+    margin-top: var(--md-space-lg);
+}
+
+.sorting-details h4 {
+    color: var(--md-on-surface);
+    margin-bottom: var(--md-space-md);
+    font-size: var(--md-font-size-lg);
+    font-weight: var(--md-font-weight-medium);
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--md-space-md);
+    margin-bottom: var(--md-space-sm);
+    background-color: var(--md-surface);
+    border-radius: var(--md-radius-medium);
+    border: 1px solid var(--md-secondary-light);
+    transition: all 0.2s ease;
+}
+
+.result-item:hover {
+    box-shadow: var(--md-shadow-1);
+    transform: translateY(-1px);
+}
+
+.result-item.success {
+    border-left: 4px solid var(--md-success);
+}
+
+.result-item.error {
+    border-left: 4px solid var(--md-error);
+}
+
+.result-info {
+    flex: 1;
+}
+
+.result-name {
+    font-weight: var(--md-font-weight-medium);
+    color: var(--md-on-surface);
+    margin-bottom: var(--md-space-xs);
+}
+
+.result-details {
+    font-size: var(--md-font-size-sm);
+    color: var(--md-on-surface-variant);
+}
+
+.result-reasoning {
+    font-size: var(--md-font-size-xs);
+    color: var(--md-on-surface-variant);
+    font-style: italic;
+    margin-top: var(--md-space-xs);
+    padding: var(--md-space-xs) var(--md-space-sm);
+    background-color: var(--md-surface-variant);
+    border-radius: var(--md-radius-small);
+    border-left: 3px solid var(--md-primary);
+}
+
+.result-status {
+    margin-left: var(--md-space-md);
+}
+
+.status-badge {
+    padding: var(--md-space-xs) var(--md-space-sm);
+    border-radius: var(--md-radius-small);
+    font-size: var(--md-font-size-xs);
+    font-weight: var(--md-font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.success {
+    background-color: var(--md-success);
+    color: var(--md-on-success);
+}
+
+.status-badge.error {
+    background-color: var(--md-error);
+    color: var(--md-on-error);
+}
+
 /* メッセージ表示 */
 .message {
     position: fixed;
