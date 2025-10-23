@@ -1,274 +1,198 @@
-/* モダンデザイン CSSリセット */
+/* マテリアルデザイン CSSリセット */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* モダンデザイン カラーパレット */
+/* マテリアルデザイン カラーパレット */
 :root {
-    /* プライマリグラデーション */
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --primary-gradient-hover: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    --primary-color: #667eea;
-    --primary-light: #8fa4f3;
-    --primary-dark: #5a6fd8;
+    /* プライマリカラー */
+    --md-primary: #1976d2;
+    --md-primary-light: #42a5f5;
+    --md-primary-dark: #1565c0;
     
-    /* セカンダリグラデーション */
-    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    --secondary-gradient-hover: linear-gradient(135deg, #ee82f9 0%, #f3455a 100%);
-    --secondary-color: #f093fb;
-    --secondary-light: #f3a7fc;
-    --secondary-dark: #ee82f9;
+    /* セカンダリカラー */
+    --md-secondary: #424242;
+    --md-secondary-light: #6d6d6d;
+    --md-secondary-dark: #212121;
     
-    /* アクセントグラデーション */
-    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    --accent-gradient-hover: linear-gradient(135deg, #3d8bfe 0%, #00d4fe 100%);
-    --accent-color: #4facfe;
-    --accent-light: #7bc4fe;
-    --accent-dark: #3d8bfe;
+    /* アクセントカラー */
+    --md-accent: #ff4081;
+    --md-accent-light: #ff79b0;
+    --md-accent-dark: #c60055;
     
-    /* 表面カラー（ガラスモーフィズム） */
-    --surface-glass: rgba(255, 255, 255, 0.25);
-    --surface-glass-hover: rgba(255, 255, 255, 0.35);
-    --surface-glass-border: rgba(255, 255, 255, 0.18);
-    --surface-solid: #ffffff;
-    --surface-solid-hover: #f8fafc;
-    --surface-dark: #1a202c;
-    --surface-dark-hover: #2d3748;
-    
-    /* 背景グラデーション */
-    --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    --background-gradient-dark: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
-    --background-solid: #f7fafc;
-    --background-dark: #0f1419;
+    /* 表面カラー */
+    --md-surface: #ffffff;
+    --md-surface-variant: #f5f5f5;
+    --md-background: #fafafa;
     
     /* テキストカラー */
-    --text-primary: #1a202c;
-    --text-primary-dark: #ffffff;
-    --text-secondary: #4a5568;
-    --text-secondary-dark: #a0aec0;
-    --text-muted: #718096;
-    --text-muted-dark: #718096;
+    --md-on-primary: #ffffff;
+    --md-on-secondary: #ffffff;
+    --md-on-surface: #212121;
+    --md-on-surface-variant: #757575;
+    --md-on-background: #212121;
     
-    /* エラーグラデーション */
-    --error-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-    --error-color: #ff6b6b;
-    --error-light: #ff8e8e;
-    --error-dark: #ee5a52;
+    /* エラーカラー */
+    --md-error: #f44336;
+    --md-on-error: #ffffff;
     
-    /* 成功グラデーション */
-    --success-gradient: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-    --success-color: #51cf66;
-    --success-light: #69db7c;
-    --success-dark: #40c057;
+    /* 成功カラー */
+    --md-success: #4caf50;
+    --md-on-success: #ffffff;
     
-    /* 警告グラデーション */
-    --warning-gradient: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
-    --warning-color: #ffd43b;
-    --warning-light: #ffe066;
-    --warning-dark: #fab005;
+    /* 警告カラー */
+    --md-warning: #ff9800;
+    --md-on-warning: #ffffff;
     
-    /* モダンな影 */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --shadow-glow: 0 0 20px rgba(102, 126, 234, 0.3);
-    --shadow-glow-hover: 0 0 30px rgba(102, 126, 234, 0.5);
-    
-    /* ガラスモーフィズム影 */
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    --glass-shadow-hover: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
-    
-    /* ニューモーフィズム影 */
-    --neu-shadow-inset: inset 2px 2px 5px #babecc, inset -2px -2px 5px #ffffff;
-    --neu-shadow-outset: 2px 2px 5px #babecc, -2px -2px 5px #ffffff;
+    /* 影 */
+    --md-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --md-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    --md-shadow-4: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
     
     /* 角丸 */
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    --radius-2xl: 32px;
-    --radius-full: 9999px;
+    --md-radius-small: 4px;
+    --md-radius-medium: 8px;
+    --md-radius-large: 12px;
+    --md-radius-xlarge: 16px;
     
     /* スペーシング */
-    --space-xs: 4px;
-    --space-sm: 8px;
-    --space-md: 16px;
-    --space-lg: 24px;
-    --space-xl: 32px;
-    --space-2xl: 48px;
-    --space-3xl: 64px;
+    --md-space-xs: 4px;
+    --md-space-sm: 8px;
+    --md-space-md: 16px;
+    --md-space-lg: 24px;
+    --md-space-xl: 32px;
+    --md-space-xxl: 48px;
     
-    /* モダンタイポグラフィ */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
-    --font-size-xs: 12px;
-    --font-size-sm: 14px;
-    --font-size-base: 16px;
-    --font-size-lg: 18px;
-    --font-size-xl: 20px;
-    --font-size-2xl: 24px;
-    --font-size-3xl: 30px;
-    --font-size-4xl: 36px;
-    --font-size-5xl: 48px;
+    /* タイポグラフィ */
+    --md-font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --md-font-size-xs: 12px;
+    --md-font-size-sm: 14px;
+    --md-font-size-md: 16px;
+    --md-font-size-lg: 18px;
+    --md-font-size-xl: 20px;
+    --md-font-size-xxl: 24px;
+    --md-font-size-xxxl: 32px;
     
     /* フォントウェイト */
-    --font-weight-light: 300;
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
-    --font-weight-bold: 700;
-    --font-weight-extrabold: 800;
+    --md-font-weight-light: 300;
+    --md-font-weight-regular: 400;
+    --md-font-weight-medium: 500;
+    --md-font-weight-bold: 700;
     
     /* 行間 */
-    --line-height-tight: 1.25;
-    --line-height-snug: 1.375;
-    --line-height-normal: 1.5;
-    --line-height-relaxed: 1.625;
-    --line-height-loose: 2;
-    
-    /* トランジション */
-    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --md-line-height-tight: 1.2;
+    --md-line-height-normal: 1.5;
+    --md-line-height-relaxed: 1.75;
 }
 
 body {
-    font-family: var(--font-family);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-normal);
-    line-height: var(--line-height-normal);
-    color: var(--text-primary);
-    background: var(--background-gradient);
+    font-family: var(--md-font-family);
+    font-size: var(--md-font-size-md);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-background);
+    background-color: var(--md-background);
     min-height: 100vh;
-    overflow-x: hidden;
 }
 
-/* モダンデザイン タイポグラフィシステム */
+/* マテリアルデザイン タイポグラフィシステム */
 .headline-1 {
-    font-size: var(--font-size-5xl);
-    font-weight: var(--font-weight-extrabold);
-    line-height: var(--line-height-tight);
-    color: var(--text-primary);
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: var(--md-font-size-xxxl);
+    font-weight: var(--md-font-weight-light);
+    line-height: var(--md-line-height-tight);
+    color: var(--md-on-background);
 }
 
 .headline-2 {
-    font-size: var(--font-size-4xl);
-    font-weight: var(--font-weight-bold);
-    line-height: var(--line-height-tight);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-xxl);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-tight);
+    color: var(--md-on-background);
 }
 
 .headline-3 {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-semibold);
-    line-height: var(--line-height-snug);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-xl);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-tight);
+    color: var(--md-on-surface);
 }
 
 .headline-4 {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-semibold);
-    line-height: var(--line-height-snug);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-lg);
+    font-weight: var(--md-font-weight-medium);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface);
 }
 
 .headline-5 {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-normal);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-md);
+    font-weight: var(--md-font-weight-medium);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface);
 }
 
 .headline-6 {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-normal);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-sm);
+    font-weight: var(--md-font-weight-medium);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface);
 }
 
 .body-1 {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-normal);
-    line-height: var(--line-height-normal);
-    color: var(--text-primary);
+    font-size: var(--md-font-size-md);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface);
 }
 
 .body-2 {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-normal);
-    line-height: var(--line-height-normal);
-    color: var(--text-secondary);
+    font-size: var(--md-font-size-sm);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface-variant);
 }
 
 .caption {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-normal);
-    line-height: var(--line-height-normal);
-    color: var(--text-muted);
+    font-size: var(--md-font-size-xs);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-surface-variant);
 }
 
 /* アプリコンテナ */
 .app-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: var(--space-lg);
-    position: relative;
-    z-index: 1;
+    padding: var(--md-space-lg);
 }
 
 /* ヘッダー */
 .app-header {
     text-align: center;
-    margin-bottom: var(--space-3xl);
-    padding: var(--space-2xl) var(--space-xl);
-    background: var(--surface-glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--surface-glass-border);
-    border-radius: var(--radius-2xl);
-    box-shadow: var(--glass-shadow);
-    position: relative;
-    overflow: hidden;
-}
-
-.app-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--primary-gradient);
-    opacity: 0.1;
-    z-index: -1;
+    margin-bottom: var(--md-space-xxl);
+    padding: var(--md-space-xl) 0;
+    background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-dark) 100%);
+    border-radius: var(--md-radius-large);
+    box-shadow: var(--md-shadow-2);
 }
 
 .app-header h1 {
-    font-size: var(--font-size-5xl);
-    font-weight: var(--font-weight-extrabold);
-    line-height: var(--line-height-tight);
-    color: var(--text-primary);
-    margin-bottom: var(--space-sm);
-    background: var(--primary-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: var(--md-font-size-xxxl);
+    font-weight: var(--md-font-weight-light);
+    line-height: var(--md-line-height-tight);
+    color: var(--md-on-primary);
+    margin-bottom: var(--md-space-sm);
 }
 
 .app-header p {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-normal);
-    color: var(--text-secondary);
+    font-size: var(--md-font-size-lg);
+    font-weight: var(--md-font-weight-regular);
+    line-height: var(--md-line-height-normal);
+    color: var(--md-on-primary);
+    opacity: 0.9;
 }
 
 /* メインコンテンツ */
@@ -279,130 +203,72 @@ body {
     margin-bottom: var(--md-space-xxl);
 }
 
-/* モダンデザイン カードシステム */
+/* マテリアルデザイン カードシステム */
 .card {
-    background: var(--surface-glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-2xl);
-    padding: var(--space-xl);
-    box-shadow: var(--glass-shadow);
-    border: 1px solid var(--surface-glass-border);
-    transition: all var(--transition-normal);
+    background-color: var(--md-surface);
+    border-radius: var(--md-radius-large);
+    padding: var(--md-space-xl);
+    box-shadow: var(--md-shadow-2);
+    border: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: var(--primary-gradient);
-    opacity: 0.05;
-    z-index: -1;
-    transition: opacity var(--transition-normal);
-}
-
 .card:hover {
-    box-shadow: var(--glass-shadow-hover);
-    transform: translateY(-4px) scale(1.01);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.card:hover::before {
-    opacity: 0.1;
+    box-shadow: var(--md-shadow-3);
+    transform: translateY(-2px);
 }
 
 .card:active {
-    transform: translateY(-2px) scale(1.005);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(0);
+    box-shadow: var(--md-shadow-2);
 }
 
 /* カードバリエーション */
 .card-elevated {
-    background: var(--surface-solid);
-    box-shadow: var(--shadow-xl);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: var(--md-shadow-3);
 }
 
 .card-elevated:hover {
-    box-shadow: var(--shadow-2xl), var(--shadow-glow);
-    transform: translateY(-6px) scale(1.02);
+    box-shadow: var(--md-shadow-4);
 }
 
 .card-outlined {
-    background: transparent;
-    border: 2px solid var(--surface-glass-border);
+    background-color: var(--md-surface);
+    border: 1px solid var(--md-secondary-light);
     box-shadow: none;
 }
 
 .card-outlined:hover {
-    background: var(--surface-glass);
-    box-shadow: var(--glass-shadow);
-    transform: translateY(-2px);
+    box-shadow: var(--md-shadow-1);
 }
 
 .card-filled {
-    background: var(--surface-solid);
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: var(--md-surface-variant);
+    box-shadow: none;
 }
 
 .card-filled:hover {
-    background: var(--surface-solid-hover);
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
-}
-
-/* ガラスモーフィズムカード */
-.card-glass {
-    background: var(--surface-glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--surface-glass-border);
-    box-shadow: var(--glass-shadow);
-}
-
-.card-glass:hover {
-    background: var(--surface-glass-hover);
-    box-shadow: var(--glass-shadow-hover);
-    transform: translateY(-4px);
-}
-
-/* ニューモーフィズムカード */
-.card-neu {
-    background: var(--surface-solid);
-    box-shadow: var(--neu-shadow-outset);
-    border: none;
-}
-
-.card-neu:hover {
-    box-shadow: var(--neu-shadow-inset);
-    transform: translateY(-1px);
+    background-color: var(--md-secondary-light);
+    box-shadow: var(--md-shadow-1);
 }
 
 /* カードサイズ */
 .card-small {
-    padding: var(--space-md);
-    border-radius: var(--radius-lg);
+    padding: var(--md-space-md);
 }
 
 .card-medium {
-    padding: var(--space-lg);
-    border-radius: var(--radius-xl);
+    padding: var(--md-space-lg);
 }
 
 .card-large {
-    padding: var(--space-xl);
-    border-radius: var(--radius-2xl);
+    padding: var(--md-space-xl);
 }
 
 .card-extra-large {
-    padding: var(--space-2xl);
-    border-radius: var(--radius-2xl);
+    padding: var(--md-space-xxl);
 }
 
 /* カード内のタイポグラフィ */
@@ -504,116 +370,28 @@ body {
 
 /* ファイルアップロードエリア */
 .upload-area {
-    border: 2px dashed var(--surface-glass-border);
-    border-radius: var(--radius-2xl);
-    padding: var(--space-2xl) var(--space-lg);
+    border: 2px dashed var(--md-secondary-light);
+    border-radius: var(--md-radius-large);
+    padding: var(--md-space-xxl) var(--md-space-lg);
     text-align: center;
-    transition: all var(--transition-normal);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    background: var(--surface-glass);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    margin-bottom: var(--space-lg);
-    position: relative;
-    overflow: hidden;
-}
-
-.upload-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--primary-gradient);
-    opacity: 0.1;
-    transition: left var(--transition-slow);
-    z-index: -1;
+    background-color: var(--md-surface-variant);
+    margin-bottom: var(--md-space-lg);
 }
 
 .upload-area:hover {
-    border-color: var(--primary-color);
-    background: var(--surface-glass-hover);
-    transform: translateY(-2px) scale(1.01);
-    box-shadow: var(--glass-shadow);
-}
-
-.upload-area:hover::before {
-    left: 0;
+    border-color: var(--md-primary);
+    background-color: rgba(25, 118, 210, 0.04);
+    transform: translateY(-1px);
+    box-shadow: var(--md-shadow-1);
 }
 
 .upload-area.dragover {
-    border-color: var(--primary-color);
-    background: var(--surface-glass-hover);
-    transform: scale(1.02);
-    box-shadow: var(--glass-shadow-hover), var(--shadow-glow);
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { transform: scale(1.02); }
-    50% { transform: scale(1.05); }
-}
-
-/* モダンアニメーション */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-}
-
-@keyframes glow {
-    0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.3); }
-    50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6); }
-}
-
-/* アニメーションクラス */
-.animate-fadeInUp {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.animate-fadeInScale {
-    animation: fadeInScale 0.4s ease-out;
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-.animate-glow {
-    animation: glow 2s ease-in-out infinite;
-}
-
-.animate-shimmer {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
+    border-color: var(--md-primary);
+    background-color: rgba(25, 118, 210, 0.08);
+    transform: scale(1.01);
+    box-shadow: var(--md-shadow-2);
 }
 
 .upload-content {
@@ -643,178 +421,173 @@ body {
     line-height: var(--md-line-height-normal);
 }
 
-/* モダンデザイン ボタンシステム */
+/* マテリアルデザイン ボタンシステム */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm);
-    padding: var(--space-md) var(--space-lg);
+    gap: var(--md-space-sm);
+    padding: var(--md-space-md) var(--md-space-lg);
     border: none;
-    border-radius: var(--radius-lg);
-    font-family: var(--font-family);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
-    line-height: var(--line-height-normal);
+    border-radius: var(--md-radius-small);
+    font-family: var(--md-font-family);
+    font-size: var(--md-font-size-md);
+    font-weight: var(--md-font-weight-medium);
+    line-height: var(--md-line-height-normal);
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
     min-height: 48px;
+    box-shadow: var(--md-shadow-1);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
-.btn::before {
+.btn:before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left var(--transition-slow);
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
 }
 
-.btn:hover::before {
-    left: 100%;
+.btn:active:before {
+    width: 300px;
+    height: 300px;
 }
 
 /* プライマリボタン */
 .btn-primary {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--md-primary);
+    color: var(--md-on-primary);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-primary:hover {
-    background: var(--primary-gradient-hover);
-    box-shadow: var(--shadow-xl), var(--shadow-glow);
-    transform: translateY(-2px) scale(1.02);
+    background-color: var(--md-primary-dark);
+    box-shadow: var(--md-shadow-3);
+    transform: translateY(-1px);
 }
 
 .btn-primary:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: var(--shadow-md);
+    transform: translateY(0);
+    box-shadow: var(--md-shadow-1);
 }
 
 /* セカンダリボタン */
 .btn-secondary {
-    background: var(--surface-glass);
-    color: var(--text-primary);
-    border: 1px solid var(--surface-glass-border);
-    box-shadow: var(--glass-shadow);
+    background-color: var(--md-surface);
+    color: var(--md-primary);
+    border: 1px solid var(--md-primary);
+    box-shadow: var(--md-shadow-1);
 }
 
 .btn-secondary:hover {
-    background: var(--surface-glass-hover);
-    box-shadow: var(--glass-shadow-hover);
-    transform: translateY(-2px);
+    background-color: rgba(25, 118, 210, 0.04);
+    box-shadow: var(--md-shadow-2);
+    transform: translateY(-1px);
 }
 
 .btn-secondary:active {
     transform: translateY(0);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--md-shadow-1);
 }
 
 /* アウトラインボタン */
 .btn-outline {
-    background: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    background-color: transparent;
+    color: var(--md-primary);
+    border: 1px solid var(--md-primary);
     box-shadow: none;
 }
 
 .btn-outline:hover {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
+    background-color: rgba(25, 118, 210, 0.04);
+    box-shadow: var(--md-shadow-1);
 }
 
 /* テキストボタン */
 .btn-text {
-    background: transparent;
-    color: var(--primary-color);
+    background-color: transparent;
+    color: var(--md-primary);
     border: none;
     box-shadow: none;
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--md-space-sm) var(--md-space-md);
 }
 
 .btn-text:hover {
-    background: rgba(102, 126, 234, 0.1);
-    transform: translateY(-1px);
+    background-color: rgba(25, 118, 210, 0.04);
 }
 
 /* 成功ボタン */
 .btn-success {
-    background: var(--success-gradient);
-    color: white;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--md-success);
+    color: var(--md-on-success);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-success:hover {
-    background: linear-gradient(135deg, #69db7c 0%, #51cf66 100%);
-    box-shadow: var(--shadow-xl);
-    transform: translateY(-2px) scale(1.02);
+    background-color: #388e3c;
+    box-shadow: var(--md-shadow-3);
+    transform: translateY(-1px);
 }
 
 /* エラーボタン */
 .btn-error {
-    background: var(--error-gradient);
-    color: white;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--md-error);
+    color: var(--md-on-error);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-error:hover {
-    background: linear-gradient(135deg, #ff8e8e 0%, #ff6b6b 100%);
-    box-shadow: var(--shadow-xl);
-    transform: translateY(-2px) scale(1.02);
+    background-color: #d32f2f;
+    box-shadow: var(--md-shadow-3);
+    transform: translateY(-1px);
 }
 
 /* 警告ボタン */
 .btn-warning {
-    background: var(--warning-gradient);
-    color: white;
-    box-shadow: var(--shadow-lg);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--md-warning);
+    color: var(--md-on-warning);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-warning:hover {
-    background: linear-gradient(135deg, #ffe066 0%, #ffd43b 100%);
-    box-shadow: var(--shadow-xl);
-    transform: translateY(-2px) scale(1.02);
+    background-color: #f57c00;
+    box-shadow: var(--md-shadow-3);
+    transform: translateY(-1px);
 }
 
 /* ボタンサイズ */
 .btn-small {
-    padding: var(--space-sm) var(--space-md);
-    font-size: var(--font-size-sm);
+    padding: var(--md-space-sm) var(--md-space-md);
+    font-size: var(--md-font-size-sm);
     min-height: 36px;
-    border-radius: var(--radius-md);
 }
 
 .btn-large {
-    padding: var(--space-lg) var(--space-xl);
-    font-size: var(--font-size-lg);
+    padding: var(--md-space-lg) var(--md-space-xl);
+    font-size: var(--md-font-size-lg);
     min-height: 56px;
-    border-radius: var(--radius-xl);
 }
 
 /* ボタン状態 */
 .btn:disabled {
-    opacity: 0.5;
+    opacity: 0.38;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: none !important;
 }
 
 .btn:disabled:hover {
-    background: inherit;
+    background-color: inherit;
     transform: none;
     box-shadow: none;
 }
@@ -1216,7 +989,7 @@ body {
 /* 親フォルダ詳細情報 */
 .parent-folder-details {
     margin-top: 20px;
-        padding: 20px;
+    padding: 20px;
     background: #f7fafc;
     border-radius: 8px;
     border: 1px solid #e2e8f0;
@@ -1267,7 +1040,7 @@ body {
 
 .contents-lists {
     display: flex;
-        flex-direction: column;
+    flex-direction: column;
     gap: 15px;
 }
 
@@ -1282,7 +1055,7 @@ body {
 .sub-folders-list h6,
 .files-list-detail h6 {
     margin-top: 0;
-        margin-bottom: 10px;
+    margin-bottom: 10px;
     color: #4a5568;
     font-size: 0.9rem;
     font-weight: 600;
