@@ -273,6 +273,70 @@ main {
     background-color: #218838;
 }
 
+/* パンくずリスト */
+.breadcrumb {
+    padding: 8px 12px;
+    margin: 5px 0;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.breadcrumb span {
+    cursor: pointer;
+    color: #007bff;
+    margin-right: 5px;
+}
+
+.breadcrumb span:hover {
+    text-decoration: underline;
+}
+
+/* ファイル一覧 */
+.files-header {
+    margin: 10px 0 5px 0;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.files-toggle {
+    cursor: pointer;
+    font-weight: 500;
+    color: #495057;
+}
+
+.files-toggle:hover {
+    color: #007bff;
+}
+
+.files-list {
+    margin-left: 20px;
+    border-left: 2px solid #dee2e6;
+    padding-left: 10px;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    margin: 2px 0;
+    background-color: #f8f9fa;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.file-name {
+    color: #495057;
+}
+
+.file-size {
+    color: #6c757d;
+    font-size: 12px;
+}
+
 /* 結果表示 */
 .results-area {
     margin-top: 30px;

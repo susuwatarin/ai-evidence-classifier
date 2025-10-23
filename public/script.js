@@ -742,30 +742,49 @@ async function getBoxFolders(folderId = '0') {
     }
 }
 
-// フォルダ一覧を表示
-async function displayBoxFolders(folderId = '0') {
+// フォルダ一覧を表示（Windowsエクスプローラー風）
+async function displayBoxFolders(folderId = '0', parentPath = '') {
     const folderData = await getBoxFolders(folderId);
     if (!folderData) return;
 
+    // 現在のパスを更新
+    const currentPath = parentPath ? `${parentPath} > ${folderData.folder.name}` : folderData.folder.name;
+    
     // フォルダ情報を表示
     const folderInfo = document.getElementById('folderInfo');
     if (folderInfo) {
         folderInfo.innerHTML = `
             <h5>現在のフォルダ: ${folderData.folder.name}</h5>
+            <p>パス: ${currentPath}</p>
             <p>フォルダ数: ${folderData.folders.length} | ファイル数: ${folderData.files.length}</p>
         `;
     }
 
-    // フォルダ一覧を表示
+    // フォルダツリーを表示
     const folderList = document.getElementById('folderList');
     if (folderList) {
         folderList.innerHTML = '';
         
+        // パンくずリストを追加
+        if (parentPath) {
+            const breadcrumb = document.createElement('div');
+            breadcrumb.className = 'breadcrumb';
+            breadcrumb.innerHTML = `
+                <span onclick="displayBoxFolders('0')">🏠 ルート</span>
+                ${parentPath.split(' > ').map((part, index, array) => {
+                    const pathParts = array.slice(0, index + 1);
+                    return `<span onclick="navigateToBreadcrumb('${index}')"> > ${part}</span>`;
+                }).join('')}
+            `;
+            folderList.appendChild(breadcrumb);
+        }
+        
+        // フォルダ一覧を表示
         folderData.folders.forEach(folder => {
             const folderItem = document.createElement('div');
             folderItem.className = 'folder-item';
             folderItem.innerHTML = `
-                <div class="folder-name" onclick="navigateToFolder('${folder.id}')">
+                <div class="folder-name" onclick="navigateToFolder('${folder.id}', '${currentPath}')">
                     📁 ${folder.name}
                 </div>
                 <div class="folder-actions">
@@ -774,12 +793,68 @@ async function displayBoxFolders(folderId = '0') {
             `;
             folderList.appendChild(folderItem);
         });
+        
+        // ファイル一覧も表示（折りたたみ可能）
+        if (folderData.files.length > 0) {
+            const filesHeader = document.createElement('div');
+            filesHeader.className = 'files-header';
+            filesHeader.innerHTML = `
+                <div class="files-toggle" onclick="toggleFiles()">
+                    📄 ファイル (${folderData.files.length}個) <span id="filesToggle">▼</span>
+                </div>
+            `;
+            folderList.appendChild(filesHeader);
+            
+            const filesList = document.createElement('div');
+            filesList.id = 'filesList';
+            filesList.className = 'files-list';
+            filesList.style.display = 'none';
+            
+            folderData.files.forEach(file => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-name">
+                        📄 ${file.name}
+                    </div>
+                    <div class="file-size">
+                        ${formatFileSize(file.size)}
+                    </div>
+                `;
+                filesList.appendChild(fileItem);
+            });
+            
+            folderList.appendChild(filesList);
+        }
     }
 }
 
 // フォルダに移動
-async function navigateToFolder(folderId) {
-    await displayBoxFolders(folderId);
+async function navigateToFolder(folderId, parentPath = '') {
+    await displayBoxFolders(folderId, parentPath);
+}
+
+// ファイルサイズをフォーマット
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+// ファイル一覧の表示/非表示を切り替え
+function toggleFiles() {
+    const filesList = document.getElementById('filesList');
+    const filesToggle = document.getElementById('filesToggle');
+    
+    if (filesList.style.display === 'none') {
+        filesList.style.display = 'block';
+        filesToggle.textContent = '▲';
+    } else {
+        filesList.style.display = 'none';
+        filesToggle.textContent = '▼';
+    }
 }
 
 // 親フォルダに設定
