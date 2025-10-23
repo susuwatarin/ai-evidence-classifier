@@ -44,18 +44,27 @@ module.exports = async function handler(req, res) {
       }
 
       // URLエンコードされたデータを作成
-      const tokenData = new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        client_id: BOX_CLIENT_ID,
-        client_secret: BOX_CLIENT_SECRET
-      });
+      const tokenData = new URLSearchParams();
+      tokenData.append('grant_type', 'authorization_code');
+      tokenData.append('code', code);
+      tokenData.append('client_id', BOX_CLIENT_ID);
+      tokenData.append('client_secret', BOX_CLIENT_SECRET);
 
-      const tokenResponse = await axios.post('https://api.box.com/oauth2/token', tokenData, {
+      console.log('Box認証リクエスト:', {
+        url: 'https://api.box.com/oauth2/token',
+        data: tokenData.toString(),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
+
+      const tokenResponse = await axios.post('https://api.box.com/oauth2/token', tokenData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+
+      console.log('Box認証レスポンス:', tokenResponse.data);
 
       if (tokenResponse.data.access_token) {
         res.status(200).json({
@@ -93,6 +102,14 @@ module.exports = async function handler(req, res) {
     } else {
       errorMessage += `: ${error.message}`;
     }
+    
+    // デバッグ用の詳細情報を追加
+    console.error('エラー詳細:', {
+      message: error.message,
+      stack: error.stack,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     
     res.status(500).json({
       success: false,

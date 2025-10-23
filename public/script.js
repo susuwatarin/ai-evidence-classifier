@@ -503,7 +503,9 @@ async function completeBoxAuth(code) {
         });
         
         if (!response.ok) {
-            throw new Error(`トークン取得に失敗: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            console.error('トークン取得エラー:', errorData);
+            throw new Error(`トークン取得に失敗: ${response.status} - ${errorData.error || 'Unknown error'}`);
         }
         
         const data = await response.json();
