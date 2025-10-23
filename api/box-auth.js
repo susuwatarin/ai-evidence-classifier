@@ -43,12 +43,15 @@ module.exports = async function handler(req, res) {
         });
       }
 
-      const tokenResponse = await axios.post('https://api.box.com/oauth2/token', {
+      // URLエンコードされたデータを作成
+      const tokenData = new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
         client_id: BOX_CLIENT_ID,
         client_secret: BOX_CLIENT_SECRET
-      }, {
+      });
+
+      const tokenResponse = await axios.post('https://api.box.com/oauth2/token', tokenData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
@@ -78,9 +81,22 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Box認証エラー:', error);
+    
+    // より詳細なエラー情報を提供
+    let errorMessage = 'Box認証でエラーが発生しました';
+    if (error.response) {
+      console.error('Box API レスポンスエラー:', error.response.data);
+      errorMessage += `: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
+    } else if (error.request) {
+      console.error('Box API リクエストエラー:', error.request);
+      errorMessage += ': リクエストが送信できませんでした';
+    } else {
+      errorMessage += `: ${error.message}`;
+    }
+    
     res.status(500).json({
       success: false,
-      error: 'Box認証でエラーが発生しました: ' + error.message
+      error: errorMessage
     });
   }
 };
