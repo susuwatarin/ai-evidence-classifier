@@ -226,7 +226,7 @@ async function startClassification() {
             
             // バッチ間の待機（API制限対策）
             if (batchIndex < batches.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 1000));
             }
         }
         
@@ -697,19 +697,120 @@ function logoutBox() {
     showMessage('Boxからログアウトしました', 'info');
 }
 
-// 親フォルダ設定（プレースホルダー）
+// フォルダ一覧取得
+async function getBoxFolders(folderId = '0') {
+    try {
+        const accessToken = await getValidBoxToken();
+        if (!accessToken) {
+            showMessage('Box認証が必要です', 'error');
+            return null;
+        }
+
+        const response = await fetch(`/api/box-folders?accessToken=${accessToken}&folderId=${folderId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`フォルダ取得に失敗: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.success) {
+            return data;
+        } else {
+            throw new Error(data.error || 'フォルダ情報の取得に失敗しました');
+        }
+    } catch (error) {
+        showMessage('フォルダ取得エラー: ' + error.message, 'error');
+        return null;
+    }
+}
+
+// フォルダ一覧を表示
+async function displayBoxFolders(folderId = '0') {
+    const folderData = await getBoxFolders(folderId);
+    if (!folderData) return;
+
+    // フォルダ情報を表示
+    const folderInfo = document.getElementById('folderInfo');
+    if (folderInfo) {
+        folderInfo.innerHTML = `
+            <h5>現在のフォルダ: ${folderData.folder.name}</h5>
+            <p>フォルダ数: ${folderData.folders.length} | ファイル数: ${folderData.files.length}</p>
+        `;
+    }
+
+    // フォルダ一覧を表示
+    const folderList = document.getElementById('folderList');
+    if (folderList) {
+        folderList.innerHTML = '';
+        
+        folderData.folders.forEach(folder => {
+            const folderItem = document.createElement('div');
+            folderItem.className = 'folder-item';
+            folderItem.innerHTML = `
+                <div class="folder-name" onclick="navigateToFolder('${folder.id}')">
+                    📁 ${folder.name}
+                </div>
+                <div class="folder-actions">
+                    <button onclick="setAsParentFolder('${folder.id}', '${folder.name}')">親フォルダに設定</button>
+                </div>
+            `;
+            folderList.appendChild(folderItem);
+        });
+    }
+}
+
+// フォルダに移動
+async function navigateToFolder(folderId) {
+    await displayBoxFolders(folderId);
+}
+
+// 親フォルダに設定
+async function setAsParentFolder(folderId, folderName) {
+    currentFolderId = folderId;
+    
+    // UIを更新
+    const folderInfo = document.getElementById('folderInfo');
+    if (folderInfo) {
+        folderInfo.innerHTML = `
+            <h5>親フォルダ設定完了</h5>
+            <p>📁 ${folderName} (ID: ${folderId})</p>
+            <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
+        `;
+    }
+    
+    showMessage(`親フォルダを設定しました: ${folderName}`, 'success');
+}
+
+// 親フォルダ設定（既存の関数を更新）
 async function setParentFolder() {
     const folderInput = document.getElementById('parentFolderId');
     const folderId = folderInput.value.trim();
     
     if (!folderId) {
-        alert('フォルダIDまたはURLを入力してください');
+        showMessage('フォルダIDまたはURLを入力してください', 'error');
         return;
     }
     
-    // TODO: フォルダIDの検証と設定
-    console.log('親フォルダ設定:', folderId);
-    alert('フォルダ設定機能は次のステップで実装します');
+    // フォルダIDを抽出（URLからIDを抽出）
+    let actualFolderId = folderId;
+    if (folderId.includes('box.com/folder/')) {
+        const match = folderId.match(/\/folder\/(\d+)/);
+        if (match) {
+            actualFolderId = match[1];
+        }
+    }
+    
+    // フォルダ情報を取得して設定
+    const folderData = await getBoxFolders(actualFolderId);
+    if (folderData) {
+        await setAsParentFolder(actualFolderId, folderData.folder.name);
+    }
 }
 
 // 必須フォルダのチェック（プレースホルダー）
