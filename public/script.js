@@ -58,6 +58,13 @@ function clearBoxAuth() {
     localStorage.removeItem('boxAccessToken');
     localStorage.removeItem('boxRefreshToken');
     localStorage.removeItem('boxTokenExpiry');
+    
+    // 親フォルダ詳細情報エリアを非表示
+    const detailsArea = document.getElementById('parentFolderDetails');
+    if (detailsArea) {
+        detailsArea.style.display = 'none';
+    }
+    
     updateAuthStatus(false);
 }
 
@@ -744,6 +751,11 @@ async function getBoxFolders(folderId = '0') {
 
 // フォルダ一覧を表示（Windowsエクスプローラー風）
 async function displayBoxFolders(folderId = '0', parentPath = '') {
+    // ルートフォルダの場合は履歴をリセット
+    if (folderId === '0') {
+        navigationHistory = [];
+    }
+    
     const folderData = await getBoxFolders(folderId);
     if (!folderData) return;
 
@@ -766,16 +778,17 @@ async function displayBoxFolders(folderId = '0', parentPath = '') {
         folderList.innerHTML = '';
         
         // パンくずリストを追加
-        if (parentPath) {
+        if (navigationHistory.length > 0) {
             const breadcrumb = document.createElement('div');
             breadcrumb.className = 'breadcrumb';
-            breadcrumb.innerHTML = `
-                <span onclick="displayBoxFolders('0')">🏠 ルート</span>
-                ${parentPath.split(' > ').map((part, index, array) => {
-                    const pathParts = array.slice(0, index + 1);
-                    return `<span onclick="navigateToBreadcrumb('${index}')"> > ${part}</span>`;
-                }).join('')}
-            `;
+            
+            let breadcrumbHTML = `<span onclick="displayBoxFolders('0')">🏠 ルート</span>`;
+            
+            navigationHistory.forEach((folder, index) => {
+                breadcrumbHTML += `<span onclick="navigateToBreadcrumb(${index})"> > ${folder.name}</span>`;
+            });
+            
+            breadcrumb.innerHTML = breadcrumbHTML;
             folderList.appendChild(breadcrumb);
         }
         
@@ -800,7 +813,7 @@ async function displayBoxFolders(folderId = '0', parentPath = '') {
             filesHeader.className = 'files-header';
             filesHeader.innerHTML = `
                 <div class="files-toggle" onclick="toggleFiles()">
-                    📄 ファイル (${folderData.files.length}個) <span id="filesToggle">▼</span>
+                    📄 ファイル (${folderData.files.length}個) <span id="filesToggle">▲</span>
                 </div>
             `;
             folderList.appendChild(filesHeader);
@@ -808,7 +821,7 @@ async function displayBoxFolders(folderId = '0', parentPath = '') {
             const filesList = document.createElement('div');
             filesList.id = 'filesList';
             filesList.className = 'files-list';
-            filesList.style.display = 'none';
+            filesList.style.display = 'block'; // 初期表示をブロックに変更
             
             folderData.files.forEach(file => {
                 const fileItem = document.createElement('div');
@@ -831,6 +844,12 @@ async function displayBoxFolders(folderId = '0', parentPath = '') {
 
 // フォルダに移動
 async function navigateToFolder(folderId, parentPath = '') {
+    // ナビゲーション履歴を更新
+    const folderData = await getBoxFolders(folderId);
+    if (folderData) {
+        updateNavigationHistory(folderId, folderData.folder.name, parentPath);
+    }
+    
     await displayBoxFolders(folderId, parentPath);
 }
 
@@ -848,13 +867,36 @@ function toggleFiles() {
     const filesList = document.getElementById('filesList');
     const filesToggle = document.getElementById('filesToggle');
     
-    if (filesList.style.display === 'none') {
-        filesList.style.display = 'block';
-        filesToggle.textContent = '▲';
-    } else {
-        filesList.style.display = 'none';
-        filesToggle.textContent = '▼';
+    if (filesList && filesToggle) {
+        if (filesList.style.display === 'none') {
+            filesList.style.display = 'block';
+            filesToggle.textContent = '▲';
+        } else {
+            filesList.style.display = 'none';
+            filesToggle.textContent = '▼';
+        }
     }
+}
+
+// パンくずリストのナビゲーション
+let navigationHistory = [];
+
+function navigateToBreadcrumb(index) {
+    if (index < navigationHistory.length) {
+        const targetFolder = navigationHistory[index];
+        navigationHistory = navigationHistory.slice(0, index + 1);
+        displayBoxFolders(targetFolder.id, targetFolder.path);
+    }
+}
+
+// ナビゲーション履歴を更新
+function updateNavigationHistory(folderId, folderName, parentPath) {
+    const currentPath = parentPath ? `${parentPath} > ${folderName}` : folderName;
+    navigationHistory.push({
+        id: folderId,
+        name: folderName,
+        path: currentPath
+    });
 }
 
 // 親フォルダに設定
@@ -871,7 +913,92 @@ async function setAsParentFolder(folderId, folderName) {
         `;
     }
     
+    // 親フォルダの詳細情報を表示
+    await displayParentFolderDetails(folderId);
+    
     showMessage(`親フォルダを設定しました: ${folderName}`, 'success');
+}
+
+// 親フォルダ詳細情報を表示
+async function displayParentFolderDetails(folderId) {
+    try {
+        const folderData = await getBoxFolders(folderId);
+        if (!folderData) {
+            showMessage('フォルダ情報の取得に失敗しました', 'error');
+            return;
+        }
+
+        // 詳細情報エリアを表示
+        const detailsArea = document.getElementById('parentFolderDetails');
+        if (detailsArea) {
+            detailsArea.style.display = 'block';
+        }
+
+        // 基本情報を設定
+        document.getElementById('parentFolderName').textContent = folderData.folder.name;
+        document.getElementById('parentFolderId').textContent = folderData.folder.id;
+        document.getElementById('parentFolderCreated').textContent = formatDate(folderData.folder.created_at);
+        document.getElementById('parentFolderModified').textContent = formatDate(folderData.folder.modified_at);
+
+        // 統計情報を設定
+        document.getElementById('subFoldersCount').textContent = folderData.folders.length;
+        document.getElementById('filesCount').textContent = folderData.files.length;
+
+        // 子フォルダ一覧を表示
+        const subFoldersList = document.getElementById('subFoldersList');
+        if (subFoldersList) {
+            subFoldersList.innerHTML = '';
+            if (folderData.folders.length > 0) {
+                folderData.folders.forEach(folder => {
+                    const folderItem = document.createElement('div');
+                    folderItem.className = 'item-detail';
+                    folderItem.innerHTML = `
+                        <span class="item-name">📁 ${folder.name}</span>
+                        <span class="item-meta">ID: ${folder.id}</span>
+                    `;
+                    subFoldersList.appendChild(folderItem);
+                });
+            } else {
+                subFoldersList.innerHTML = '<p style="color: #6c757d; font-style: italic;">子フォルダはありません</p>';
+            }
+        }
+
+        // ファイル一覧を表示
+        const filesListDetails = document.getElementById('filesListDetails');
+        if (filesListDetails) {
+            filesListDetails.innerHTML = '';
+            if (folderData.files.length > 0) {
+                folderData.files.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'item-detail';
+                    fileItem.innerHTML = `
+                        <span class="item-name">📄 ${file.name}</span>
+                        <span class="item-meta">${formatFileSize(file.size)}</span>
+                    `;
+                    filesListDetails.appendChild(fileItem);
+                });
+            } else {
+                filesListDetails.innerHTML = '<p style="color: #6c757d; font-style: italic;">ファイルはありません</p>';
+            }
+        }
+
+    } catch (error) {
+        console.error('親フォルダ詳細情報の取得エラー:', error);
+        showMessage('親フォルダ詳細情報の取得に失敗しました', 'error');
+    }
+}
+
+// 日付をフォーマット
+function formatDate(dateString) {
+    if (!dateString) return '不明';
+    const date = new Date(dateString);
+    return date.toLocaleString('ja-JP', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
 // 親フォルダ設定（既存の関数を更新）

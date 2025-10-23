@@ -103,6 +103,40 @@
                         <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
                     </div>
                     
+                    <!-- 親フォルダ詳細情報表示エリア -->
+                    <div class="parent-folder-details" id="parentFolderDetails" style="display: none;">
+                        <h5>📁 親フォルダ詳細情報</h5>
+                        <div class="folder-details-content">
+                            <div class="folder-basic-info">
+                                <h6>基本情報</h6>
+                                <p><strong>フォルダ名:</strong> <span id="parentFolderName"></span></p>
+                                <p><strong>フォルダID:</strong> <span id="parentFolderId"></span></p>
+                                <p><strong>作成日時:</strong> <span id="parentFolderCreated"></span></p>
+                                <p><strong>更新日時:</strong> <span id="parentFolderModified"></span></p>
+                            </div>
+                            
+                            <div class="folder-contents">
+                                <h6>フォルダ内容</h6>
+                                <div class="contents-summary">
+                                    <p>📁 子フォルダ: <span id="subFoldersCount">0</span>個</p>
+                                    <p>📄 ファイル: <span id="filesCount">0</span>個</p>
+                                </div>
+                                
+                                <div class="contents-lists">
+                                    <div class="sub-folders-list">
+                                        <h6>子フォルダ一覧</h6>
+                                        <div id="subFoldersList" class="items-list"></div>
+                                    </div>
+                                    
+                                    <div class="files-list">
+                                        <h6>ファイル一覧</h6>
+                                        <div id="filesListDetails" class="items-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- フォルダ一覧表示エリア -->
                     <div class="folder-browser" id="folderBrowser">
                         <h5>フォルダ一覧</h5>

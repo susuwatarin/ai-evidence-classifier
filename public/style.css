@@ -337,6 +337,107 @@ main {
     font-size: 12px;
 }
 
+/* 親フォルダ詳細情報 */
+.parent-folder-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.folder-details-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.folder-basic-info,
+.folder-contents {
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.folder-basic-info h6,
+.folder-contents h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #495057;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.folder-basic-info p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.contents-summary {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.contents-summary p {
+    margin: 5px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.contents-lists {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.sub-folders-list,
+.files-list {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.sub-folders-list h6,
+.files-list h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #495057;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.items-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.item-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    margin: 3px 0;
+    background-color: white;
+    border-radius: 3px;
+    border: 1px solid #e9ecef;
+    font-size: 13px;
+}
+
+.item-name {
+    color: #495057;
+    font-weight: 500;
+}
+
+.item-meta {
+    color: #6c757d;
+    font-size: 11px;
+}
+
+
 /* 結果表示 */
 .results-area {
     margin-top: 30px;
