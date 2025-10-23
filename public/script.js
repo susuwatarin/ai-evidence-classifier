@@ -423,8 +423,6 @@ function resetApp() {
 // Box認証開始
 async function authenticateBox() {
     try {
-        console.log('Box認証を開始します...');
-        
         // 認証URLを取得
         const response = await fetch('/api/box-auth', {
             method: 'GET',
@@ -438,7 +436,6 @@ async function authenticateBox() {
         }
         
         const data = await response.json();
-        console.log('認証URL取得結果:', data);
         
         if (data.success && data.authUrl) {
             // 新しいウィンドウでBox認証を開く
@@ -454,20 +451,10 @@ async function authenticateBox() {
             }
             
             // 認証完了を監視
-            let authCompleted = false; // 重複使用を防ぐフラグ
+            let authCompleted = false;
             
             const handleMessage = (event) => {
-                console.log('メッセージ受信:', event.data);
-                console.log('メッセージ送信元:', event.origin);
-                
-                // セキュリティチェック（必要に応じて）
-                // if (event.origin !== 'https://ai-evidence-classifier-61015202.vercel.app') {
-                //     console.log('信頼できない送信元:', event.origin);
-                //     return;
-                // }
-                
                 if (event.data && event.data.type === 'BOX_AUTH_SUCCESS' && !authCompleted) {
-                    console.log('認証コード受信:', event.data.code);
                     authCompleted = true;
                     completeBoxAuth(event.data.code);
                     window.removeEventListener('message', handleMessage);
@@ -475,22 +462,12 @@ async function authenticateBox() {
             };
             window.addEventListener('message', handleMessage);
             
-            // ウィンドウが閉じられた場合のフォールバック
+            // ウィンドウが閉じられた場合の処理
             const checkAuth = setInterval(() => {
                 if (authWindow.closed && !authCompleted) {
                     clearInterval(checkAuth);
                     window.removeEventListener('message', handleMessage);
-                    console.log('認証ウィンドウが閉じられました');
-                    
-                    // 手動でコードを入力（フォールバック）
-                    const code = prompt('認証コードを入力してください（Box認証ページからコピーしてください）:');
-                    if (code && code.trim()) {
-                        console.log('手動で認証コードを入力:', code.trim());
-                        authCompleted = true;
-                        completeBoxAuth(code.trim());
-                    } else {
-                        console.log('認証がキャンセルされました');
-                    }
+                    showMessage('認証がキャンセルされました', 'warning');
                 }
             }, 1000);
             
@@ -499,32 +476,20 @@ async function authenticateBox() {
         }
         
     } catch (error) {
-        console.error('Box認証エラー:', error);
-        alert('Box認証に失敗しました: ' + error.message);
+        showMessage('Box認証に失敗しました: ' + error.message, 'error');
     }
 }
 
 // Box認証完了処理
 async function completeBoxAuth(code) {
     try {
-        console.log('認証コードでトークンを取得中:', code);
-        
-        // 認証コードの検証
         if (!code || typeof code !== 'string' || code.trim().length === 0) {
             throw new Error('認証コードが無効です');
         }
         
-        // 認証コードの重複使用を防ぐ
         if (boxAccessToken) {
-            console.log('既に認証済みです');
             return;
         }
-        
-        console.log('認証コードの詳細:', {
-            code: code,
-            length: code.length,
-            type: typeof code
-        });
         
         const response = await fetch('/api/box-auth', {
             method: 'POST',
@@ -534,33 +499,65 @@ async function completeBoxAuth(code) {
             body: JSON.stringify({ code: code })
         });
         
-        console.log('APIレスポンス:', {
-            status: response.status,
-            ok: response.ok,
-            headers: Object.fromEntries(response.headers.entries())
-        });
-        
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error('トークン取得エラー:', errorData);
             throw new Error(`トークン取得に失敗: ${response.status} - ${errorData.error || 'Unknown error'}`);
         }
         
         const data = await response.json();
-        console.log('トークン取得結果:', data);
         
         if (data.success && data.accessToken) {
             boxAccessToken = data.accessToken;
             updateAuthStatus(true);
-            alert('Box認証が完了しました！');
+            showMessage('Box認証が完了しました！', 'success');
         } else {
             throw new Error(data.error || 'アクセストークンが取得できませんでした');
         }
         
     } catch (error) {
-        console.error('認証完了エラー:', error);
-        alert('認証完了に失敗しました: ' + error.message);
+        showMessage('認証完了に失敗しました: ' + error.message, 'error');
     }
+}
+
+// メッセージ表示機能
+function showMessage(message, type = 'info') {
+    // 既存のメッセージエリアを取得または作成
+    let messageArea = document.getElementById('messageArea');
+    if (!messageArea) {
+        messageArea = document.createElement('div');
+        messageArea.id = 'messageArea';
+        messageArea.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        `;
+        document.body.appendChild(messageArea);
+    }
+    
+    // メッセージタイプに応じてスタイルを設定
+    const styles = {
+        success: 'background-color: #4CAF50;',
+        error: 'background-color: #f44336;',
+        warning: 'background-color: #ff9800;',
+        info: 'background-color: #2196F3;'
+    };
+    
+    messageArea.textContent = message;
+    messageArea.style.cssText += styles[type] || styles.info;
+    
+    // 3秒後に自動で非表示
+    setTimeout(() => {
+        if (messageArea && messageArea.parentNode) {
+            messageArea.parentNode.removeChild(messageArea);
+        }
+    }, 3000);
 }
 
 // 認証状態の更新

@@ -59,25 +59,29 @@ module.exports = async function handler(req, res) {
         <body>
           <h1>Box認証完了</h1>
           <p class="success">認証が完了しました！</p>
-          <p>認証コード:</p>
-          <div class="code" id="code">${code}</div>
-          <button onclick="copyCode()">コードをコピー</button>
-          <p>このウィンドウを閉じて、メインアプリケーションに戻ってください。</p>
+          <p>自動的にメインアプリケーションに戻ります...</p>
+          <div style="margin-top: 20px;">
+            <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid #f3f3f3; border-top: 3px solid #007bff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+          </div>
+          <style>
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          </style>
           
           <script>
-            function copyCode() {
-              const code = document.getElementById('code').textContent;
-              navigator.clipboard.writeText(code).then(() => {
-                alert('認証コードをコピーしました！');
-              });
-            }
-            
             // 親ウィンドウにメッセージを送信
             if (window.opener) {
               window.opener.postMessage({
                 type: 'BOX_AUTH_SUCCESS',
                 code: '${code}'
               }, '*');
+              
+              // 2秒後にウィンドウを閉じる
+              setTimeout(() => {
+                window.close();
+              }, 2000);
             }
           </script>
         </body>
