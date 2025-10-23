@@ -681,12 +681,24 @@ function updateAuthStatus(isAuthenticated) {
             <button onclick="logoutBox()">ログアウト</button>
         `;
         folderSection.style.display = 'block';
+        
+        // フォルダブラウザを表示
+        const folderBrowser = document.getElementById('folderBrowser');
+        if (folderBrowser) {
+            folderBrowser.style.display = 'block';
+        }
     } else {
         authStatus.innerHTML = `
             <p>Boxにログインしてください</p>
             <button class="auth-btn" onclick="authenticateBox()">🔐 Boxにログイン</button>
         `;
         folderSection.style.display = 'none';
+        
+        // フォルダブラウザを非表示
+        const folderBrowser = document.getElementById('folderBrowser');
+        if (folderBrowser) {
+            folderBrowser.style.display = 'none';
+        }
     }
 }
 
