@@ -65,6 +65,12 @@ function clearBoxAuth() {
         detailsArea.style.display = 'none';
     }
     
+    // フォルダ情報エリアも非表示
+    const folderInfo = document.getElementById('folderInfo');
+    if (folderInfo) {
+        folderInfo.style.display = 'none';
+    }
+    
     updateAuthStatus(false);
 }
 
@@ -911,6 +917,7 @@ async function setAsParentFolder(folderId, folderName) {
             <p>📁 ${folderName} (ID: ${folderId})</p>
             <button onclick="checkRequiredFolders()">必須フォルダをチェック</button>
         `;
+        folderInfo.style.display = 'block'; // エリアを表示
     }
     
     // 親フォルダの詳細情報を表示
